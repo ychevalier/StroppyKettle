@@ -17,7 +17,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	private static final String DEVICE_ADDRESS = "00:06:66:08:17:53";
 	private WeightReceiver arduinoReceiver = new WeightReceiver();
-	ToggleButton mPowerButton;
+	
+	private ToggleButton mPowerButton;
 	private TextView mWeightText;
 
 	@Override
@@ -28,7 +29,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		mPowerButton = (ToggleButton) findViewById(R.id.powerButton);
 		mPowerButton.setOnClickListener(this);
 		mWeightText = (TextView) findViewById(R.id.weightText);
-
 	}
 
 	@Override
