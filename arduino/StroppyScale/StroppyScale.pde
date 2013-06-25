@@ -63,6 +63,8 @@ void setup()
   	Serial.begin(115200);
 
     meetAndroid.registerFunction(powerEvent, 'p');
+
+    meetAndroid.registerFunction(weightInfo, 'i');
 }
 
 void loop()
@@ -109,6 +111,11 @@ void powerEvent(byte flag, byte numOfValues)
 {
     int state = meetAndroid.getInt();
     transmit(state==1);
+}
+
+void weightInfo(byte flag, byte numOfValues)
+{
+    meetAndroid.send(beginSteady);
 }
 
 void sendBit(boolean b) {

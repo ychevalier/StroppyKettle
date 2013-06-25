@@ -3,6 +3,22 @@
 
     <string name="app_name">StroppyKettle</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-
+    <string name="action_monitor">Monitor</string>
+    
+    <!-- Main Activity -->
+    <string name="stroppy_button">Engage Stroppy Mode</string>
+	
+	<!-- Settings Fragment -->
+	<string name="remove_kettle">Remove the kettle</string>
+	<string name="empty_kettle">Put an empty kettle</string>
+	<string name="fill_kettle">Please fill</string>
+	<string name="cup">cup</string>
+	<string name="cups">cups</string>
+	<string name="exit_button">exit</string>
+	<string name="last_frame">Done!</string>
+	
+	<!-- Settings Activity -->
+	<string name="dialog_confirm_title">Confirmation</string>
+    <string name="dialog_confirm_message">You are about to set up the previous state again, Are you sure?</string>
+	
 </resources>
