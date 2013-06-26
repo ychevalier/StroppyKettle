@@ -3,4 +3,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <Button
+        android:id="@+id/exit_button"
+        android:layout_width="@dimen/hidden_button"
+        android:layout_height="@dimen/hidden_button"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@null" />
+    
+    <ImageView
+        android:id="@+id/teaView"
+       	android:contentDescription="@string/image_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:scaleType="matrix"
+        android:src="@drawable/tea_o" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="@dimen/progress_width"
+        android:layout_height="@dimen/progress_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/huge_margin" />
+
 </RelativeLayout>

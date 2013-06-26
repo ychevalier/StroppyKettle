@@ -79,6 +79,12 @@ public abstract class GenericActivity extends FragmentActivity {
 		}
 		if (i != null) {
 			startActivity(i);
+			
+			// We don't want to finish the main activity.
+			// Not really classy...
+			if(!(this instanceof MainActivity)) {
+				finish();
+			}
 		}
 		return true;
 	}

@@ -6,7 +6,7 @@
     <string name="action_monitor">Monitor</string>
     
     <!-- Main Activity -->
-    <string name="stroppy_button">Engage Stroppy Mode</string>
+    <string name="stroppy_button">Stroppy!</string>
 	
 	<!-- Settings Fragment -->
 	<string name="remove_kettle">Remove the kettle</string>
@@ -21,4 +21,6 @@
 	<string name="dialog_confirm_title">Confirmation</string>
     <string name="dialog_confirm_message">You are about to set up the previous state again, Are you sure?</string>
 	
+    <!-- Stroppy/Wheel Activity -->
+    <string name="image_desc">StroppyWheel</string>
 </resources>

@@ -1,19 +1,23 @@
 <resources>
-
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="std_margin">8dp</dimen>
     <dimen name="big_margin">12dp</dimen>
-    
-    <dimen name="settings_margin">36dp</dimen>
-    <dimen name="settings_indicator_margin">18dp</dimen>
-    <dimen name="settings_frame_text_margin">18dp</dimen>
-    
+    <dimen name="huge_margin">36dp</dimen>
+     <dimen name="normal_text">20sp</dimen>
     <dimen name="big_text">28sp</dimen>
     <dimen name="big_big_text">32sp</dimen>
     <dimen name="huge_text">180sp</dimen>
     
-    <dimen name="stroppy_button_height">64dp</dimen>
+    <!-- Settings Activity -->
+    <dimen name="settings_margin">36dp</dimen>
+    <dimen name="settings_indicator_margin">18dp</dimen>
+    <dimen name="settings_frame_text_margin">18dp</dimen>
+    
+    <!-- Main Activity -->
+    <dimen name="stroppy_button_size">200dp</dimen>
+    
+    <!-- Stroppy Activity -->
+    <dimen name="hidden_button">100dp</dimen>
+    <dimen name="progress_height">40dp</dimen>
+    <dimen name="progress_width">200dp</dimen>
 
 </resources>

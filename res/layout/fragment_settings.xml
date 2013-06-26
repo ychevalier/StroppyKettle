@@ -37,17 +37,6 @@
             android:gravity="center"
             android:textSize="@dimen/big_text"
             android:textIsSelectable="false" />
-
-        <Button
-            android:visibility="gone"
-            android:id="@+id/exit_button"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/settings_frame_text_margin"
-            android:gravity="center"
-            android:text="@string/exit_button"
-            android:textSize="@dimen/big_text" />
     </LinearLayout>
 
 </RelativeLayout>

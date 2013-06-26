@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
+
     <color name="indicator_color">#AAAAAA</color>
     <color name="settings_frame_color">#66C0C0C0</color>
-    
+
 </resources>

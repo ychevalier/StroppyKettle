@@ -5,10 +5,11 @@
 
     <Button
         android:id="@+id/stroppy_button"
-        android:layout_width="match_parent"
-        android:text="@string/stroppy_button"
-        android:layout_margin="@dimen/std_margin"
+        style="@style/CircleButton"
+        android:layout_width="@dimen/stroppy_button_size"
+        android:layout_height="@dimen/stroppy_button_size"
         android:layout_centerInParent="true"
-        android:layout_height="@dimen/stroppy_button_height" />
+        android:layout_margin="@dimen/std_margin"
+        android:text="@string/stroppy_button" />
 
 </RelativeLayout>

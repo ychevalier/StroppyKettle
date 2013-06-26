@@ -30,6 +30,8 @@ public class MainActivity extends GenericActivity implements OnClickListener {
 		}
 		if(i != null) {
 			startActivity(i);
+			
+			finish();
 		}
 	}
 

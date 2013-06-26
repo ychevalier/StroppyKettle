@@ -7,13 +7,13 @@ import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
 import uk.ac.bham.cs.stroppykettle_v2.ui.adapters.SettingsPageAdapter;
 import uk.ac.bham.cs.stroppykettle_v2.ui.fragments.SettingsFragment;
+import uk.ac.bham.cs.stroppykettle_v2.ui.views.CustomViewPager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -25,7 +25,7 @@ public class SettingsActivity extends GenericActivity implements
 
 	private SettingsPageAdapter pageAdapter;
 	private int mCurrentPosition;
-	private ViewPager mPager;
+	private CustomViewPager mPager;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class SettingsActivity extends GenericActivity implements
 		List<Fragment> fragments = getFragments();
 		pageAdapter = new SettingsPageAdapter(getSupportFragmentManager(),
 				fragments);
-		mPager = (ViewPager) findViewById(R.id.viewpager);
+		mPager = (CustomViewPager) findViewById(R.id.viewpager);
 		mPager.setAdapter(pageAdapter);
 
 		// Bind the title indicator to the adapter
@@ -90,9 +90,18 @@ public class SettingsActivity extends GenericActivity implements
 
 		} else {
 			mCurrentPosition = position;
-		}
-		if (DEBUG_MODE) {
-			Log.d(TAG, "Selected page : " + position);
+			
+			// Position start from 0, and there is nbCups + 3 fragments.
+			// (nothing, empty and done).
+			if(position == StroppyKettleApplication.NUMBER_OF_CUPS + 2) {
+				mPager.setPagingEnabled(false);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					public void run() {
+						finish();
+					}
+				}, 1000);
+			}
 		}
 	}
 }
