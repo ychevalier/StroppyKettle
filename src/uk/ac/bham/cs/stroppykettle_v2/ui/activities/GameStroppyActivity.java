@@ -1,5 +1,8 @@
 package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
 import android.app.AlertDialog;
@@ -11,53 +14,64 @@ import android.graphics.Matrix;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-public class StroppyActivity extends GenericActivity implements
-		OnLongClickListener, OnTouchListener,
+public class GameStroppyActivity extends GenericStroppyActivity implements OnTouchListener,
 		OnGlobalLayoutListener {
 	
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
-	private static final String TAG = StroppyActivity.class.getSimpleName();
+	private static final String TAG = GameStroppyActivity.class.getSimpleName();
 
+	class mTask extends TimerTask {
+	        @Override
+	        public void run() {
+	        	if(mProgress != null && mRevCounter > 0) {
+	        		mProgress.setProgress(--mRevCounter);
+	        	}
+	        }
+	   };
+	
 	private static final int TRESHOLD = 40;
 	private static final int NB_REVOLUTION = 5;
+	
+	private static final int SEC_GO_DOWN = 1000;
 
 	private ImageView mWheelView;
 	private ProgressBar mProgress;
-
-	private Bitmap mImageOriginal;
+	
 	private Matrix mMatrix;
 	private int mWheelHeight;
 	private int mWheelWidth;
+	
+	private int mOriginalWidth;
+	private int mOriginalHeight;
 	
 	private float mRotCounter;
 	private int mRevCounter;
 
 	private double mStartAngle;
+	
+	private Timer mTimer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_stroppy);
-
-		Button exit = (Button) findViewById(R.id.exit_button);
-		exit.setOnLongClickListener(this);
+		setContentView(R.layout.activity_game_stroppy);
 		
 		mWheelView = (ImageView) findViewById(R.id.teaView);
 		mWheelView.setOnTouchListener(this);
 		
 		mProgress = (ProgressBar) findViewById(R.id.progress_bar);
 		mProgress.setMax(NB_REVOLUTION);
-		
 
-		mImageOriginal = BitmapFactory.decodeResource(getResources(),
+		Bitmap imageOriginal = BitmapFactory.decodeResource(getResources(),
 				R.drawable.tea_o);
+		
+		mOriginalWidth = imageOriginal.getWidth();
+		mOriginalHeight = imageOriginal.getHeight();
 
 		mMatrix = new Matrix();
 
@@ -69,8 +83,21 @@ public class StroppyActivity extends GenericActivity implements
 		super.onStart();
 		mRevCounter = 0;
 		mRotCounter = 0;
-		
 		mProgress.setProgress(0);
+		
+		mTimer = new Timer();
+		mTimer.scheduleAtFixedRate(new mTask(), SEC_GO_DOWN, SEC_GO_DOWN);
+	}
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		
+		if(mTimer != null) {
+			mTimer.cancel();
+			mTimer.purge();
+			mTimer = null;
+		}
 	}
 	
 	private void revOver() {
@@ -81,7 +108,9 @@ public class StroppyActivity extends GenericActivity implements
 		builder.setPositiveButton(android.R.string.ok,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						StroppyActivity.this.finish();
+						Intent i = new Intent(GameStroppyActivity.this, LoginStroppyActivity.class);
+						startActivity(i);
+						GameStroppyActivity.this.finish();
 					}
 				});
 
@@ -107,6 +136,11 @@ public class StroppyActivity extends GenericActivity implements
 			float rotation = (float) (mStartAngle - currentAngle);
 
 			if (rotation > 0f && rotation < TRESHOLD) {
+				if(mTimer != null) {
+					mTimer.cancel();
+					mTimer.purge();
+					mTimer = null;
+				}
 				
 				rotate(rotation);
 				mRotCounter += rotation;
@@ -119,8 +153,14 @@ public class StroppyActivity extends GenericActivity implements
 						revOver();
 					}
 				}
+				
+				if(mRevCounter < NB_REVOLUTION) {
+					mTimer = new Timer();
+					mTimer.scheduleAtFixedRate(new mTask(), SEC_GO_DOWN, SEC_GO_DOWN);
+				}
 			}
 			mStartAngle = currentAngle;
+			
 		}
 		return true;
 	}
@@ -162,7 +202,6 @@ public class StroppyActivity extends GenericActivity implements
 		}
 	}
 
-
 	@Override
 	public void onGlobalLayout() {
 		// method called more than once, but the values only need to be
@@ -172,28 +211,11 @@ public class StroppyActivity extends GenericActivity implements
 			mWheelWidth = mWheelView.getWidth();
 			
 			// translate to the image view's center
-			float translateX = mWheelWidth / 2 - mImageOriginal.getWidth() / 2;
-			float translateY = mWheelHeight / 2 - mImageOriginal.getHeight() / 2;
+			float translateX = mWheelWidth / 2 - mOriginalWidth / 2;
+			float translateY = mWheelHeight / 2 - mOriginalHeight / 2;
 			
 			mMatrix.postTranslate(translateX, translateY);
 			mWheelView.setImageMatrix(mMatrix);
 		}
-	}
-
-	@Override
-	public void onBackPressed() {
-		// super.onBackPressed();
-	}
-
-	@Override
-	public boolean onLongClick(View v) {
-		switch (v.getId()) {
-		case R.id.exit_button:
-			Intent i = new Intent(this, MainActivity.class);
-			startActivity(i);
-			finish();
-			return true;
-		}
-		return false;
 	}
 }

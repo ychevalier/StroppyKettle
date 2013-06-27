@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 public abstract class GenericActivity extends FragmentActivity {
 
@@ -21,6 +22,11 @@ public abstract class GenericActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		//getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+		//		WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		// mAmarinoReceiver = new ConnectionReceiver();
 		// mIsConnected = false;
 	}
@@ -82,7 +88,7 @@ public abstract class GenericActivity extends FragmentActivity {
 			
 			// We don't want to finish the main activity.
 			// Not really classy...
-			if(!(this instanceof MainActivity)) {
+			if(!(this instanceof AdminActivity)) {
 				finish();
 			}
 		}

@@ -21,6 +21,12 @@
 	<string name="dialog_confirm_title">Confirmation</string>
     <string name="dialog_confirm_message">You are about to set up the previous state again, Are you sure?</string>
 	
-    <!-- Stroppy/Wheel Activity -->
+    <!-- Game Stroppy Activity -->
     <string name="image_desc">StroppyWheel</string>
+    
+    <!-- Login Stroppy Activity -->
+    <string name="login_button">Login!</string>
+    
+     <!-- Cups Stroppy Activity -->
+    <string name="cups_button">Launch Kettle</string>
 </resources>

@@ -1,0 +1,15 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <Button
+        android:id="@+id/login_button"
+        style="@style/CircleButton"
+        android:layout_width="@dimen/stroppy_button_size"
+        android:layout_height="@dimen/stroppy_button_size"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/std_margin"
+        android:text="@string/login_button" />
+
+</RelativeLayout>

@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".ui.activities.MainActivity"
+            android:name=".ui.activities.AdminActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.activities.MonitorActivity"
@@ -23,10 +23,19 @@
             android:name=".ui.activities.SettingsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.StroppyActivity"
+            android:name=".ui.activities.GameStroppyActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activities.CupsStroppyActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activities.LoginStroppyActivity"
+            android:launchMode="singleTop"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" >
+            android:clearTaskOnLaunch="true"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
