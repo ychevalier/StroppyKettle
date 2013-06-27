@@ -1,15 +1,41 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/cups_selector"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/selector_height"
+        android:layout_centerInParent="true"
+        android:background="@drawable/number_picker"
+        android:padding="0dp" />
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="10dp"
+        android:layout_alignTop="@id/cups_selector"
+        android:layout_centerHorizontal="true"
+        android:padding="2dp"
+        android:src="@drawable/simple_rect" />
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="10dp"
+        android:layout_alignBottom="@id/cups_selector"
+        android:layout_centerHorizontal="true"
+        android:padding="2dp"
+        android:src="@drawable/simple_rect" />
+
     <Button
         android:id="@+id/cups_button"
-        style="@style/CircleButton"
-        android:layout_width="@dimen/stroppy_button_size"
-        android:layout_height="@dimen/stroppy_button_size"
-        android:layout_centerInParent="true"
-        android:layout_margin="@dimen/std_margin"
+        style="@style/CustomButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/settings_margin"
         android:text="@string/cups_button" />
 
 </RelativeLayout>

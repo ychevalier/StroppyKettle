@@ -24,6 +24,8 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 	
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
 	private static final String TAG = GameStroppyActivity.class.getSimpleName();
+	
+	public static final String EXTRA_NB_CUPS = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_NB_CUPS";
 
 	class mTask extends TimerTask {
 	        @Override

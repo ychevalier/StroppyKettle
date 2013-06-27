@@ -5,7 +5,7 @@ import java.util.List;
 
 import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
-import uk.ac.bham.cs.stroppykettle_v2.ui.adapters.SettingsPageAdapter;
+import uk.ac.bham.cs.stroppykettle_v2.ui.adapters.SettingsPagerAdapter;
 import uk.ac.bham.cs.stroppykettle_v2.ui.fragments.SettingsFragment;
 import uk.ac.bham.cs.stroppykettle_v2.ui.views.CustomViewPager;
 import android.app.AlertDialog;
@@ -23,7 +23,6 @@ public class SettingsActivity extends GenericActivity implements
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
 	private static final String TAG = SettingsActivity.class.getSimpleName();
 
-	private SettingsPageAdapter pageAdapter;
 	private int mCurrentPosition;
 	private CustomViewPager mPager;
 
@@ -32,7 +31,7 @@ public class SettingsActivity extends GenericActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_settings);
 		List<Fragment> fragments = getFragments();
-		pageAdapter = new SettingsPageAdapter(getSupportFragmentManager(),
+		SettingsPagerAdapter pageAdapter = new SettingsPagerAdapter(getSupportFragmentManager(),
 				fragments);
 		mPager = (CustomViewPager) findViewById(R.id.viewpager);
 		mPager.setAdapter(pageAdapter);

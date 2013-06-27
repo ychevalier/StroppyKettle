@@ -6,15 +6,14 @@ import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 
-public class SettingsPageAdapter extends FragmentPagerAdapter {
+public class SettingsPagerAdapter extends FragmentPagerAdapter {
 	private List<Fragment> fragments;
 	
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
-	private static final String TAG = SettingsPageAdapter.class.getSimpleName();
+	private static final String TAG = SettingsPagerAdapter.class.getSimpleName();
 
-	public SettingsPageAdapter(FragmentManager fm, List<Fragment> fragments) {
+	public SettingsPagerAdapter(FragmentManager fm, List<Fragment> fragments) {
 		super(fm);
 		this.fragments = fragments;
 	}

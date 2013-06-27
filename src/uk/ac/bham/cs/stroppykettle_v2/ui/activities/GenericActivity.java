@@ -77,10 +77,14 @@ public abstract class GenericActivity extends FragmentActivity {
 		Intent i = null;
 		switch (item.getItemId()) {
 		case R.id.action_settings:
-			i = new Intent(this, SettingsActivity.class);
+			if(!(this instanceof SettingsActivity)) {
+				i = new Intent(this, SettingsActivity.class);
+			}
 			break;
 		case R.id.action_monitor:
-			i = new Intent(this, MonitorActivity.class);
+			if(!(this instanceof MonitorActivity)) {
+				i = new Intent(this, MonitorActivity.class);
+			}
 			break;
 		}
 		if (i != null) {
