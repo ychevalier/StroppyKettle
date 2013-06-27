@@ -29,4 +29,5 @@
     
      <!-- Cups Stroppy Activity -->
     <string name="cups_button">Launch Kettle</string>
+    <string name="indicators">indicators</string>
 </resources>

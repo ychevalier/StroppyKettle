@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <color name="indicator_color">#AAAAAA</color>
-    <color name="settings_frame_color">#66C0C0C0</color>
-
+    
+    <!-- Widgets -->
+    <color name="stroke_std">#AAAAAA</color>
+    <color name="fill_pressed">#ff33b5e5</color>
+    <color name="fill_std">#ffffffff</color>
+    
+    <!-- ProgressBar -->
+    <color name="grad_light">#ff33b5e5</color>
+	<color name="grad_dark">#ff0099cc</color>
+    
 </resources>

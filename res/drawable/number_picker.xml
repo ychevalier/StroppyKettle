@@ -3,16 +3,19 @@
 
     <item>
         <shape android:shape="rectangle" >
-            <solid android:color="@android:color/white" />
+            <solid android:color="@color/fill_std" />
         </shape>
     </item>
-    
-    <item android:top="1dp" android:bottom="1dp"> 
-      <shape 
-        android:shape="rectangle">
-            <stroke android:width="1dp" android:color="@color/indicator_color" />
+    <item
+        android:bottom="@dimen/stroke_std"
+        android:top="@dimen/stroke_std">
+        <shape android:shape="rectangle" >
+            <stroke
+                android:width="@dimen/stroke_std"
+                android:color="@color/stroke_std" />
+
             <solid android:color="@android:color/transparent" />
         </shape>
-   </item>
+    </item>
 
 </layer-list>

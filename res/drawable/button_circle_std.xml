@@ -2,8 +2,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval" >
 
-    <solid android:color="@android:color/white" />
-    <!-- corners android:radius="20dp" /-->
-    <stroke android:width="1dp" android:color="@color/indicator_color"/>
+    <solid android:color="@color/fill_std" />
+    <stroke android:width="@dimen/stroke_std" android:color="@color/stroke_std"/>
 
 </shape>
