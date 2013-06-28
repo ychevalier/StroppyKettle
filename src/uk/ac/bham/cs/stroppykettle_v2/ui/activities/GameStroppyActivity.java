@@ -26,7 +26,8 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 	private static final String TAG = GameStroppyActivity.class.getSimpleName();
 	
 	public static final String EXTRA_NB_CUPS = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_NB_CUPS";
-
+	public static final String EXTRA_USER_ID = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_USER_ID";
+	
 	class mTask extends TimerTask {
 	        @Override
 	        public void run() {
@@ -57,6 +58,9 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 	private double mStartAngle;
 	
 	private Timer mTimer;
+	
+	private int mNbCups;
+	private int mUserId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +87,15 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 	@Override
 	protected void onStart() {
 		super.onStart();
+		
+		if(getIntent() != null) {
+			mNbCups = getIntent().getIntExtra(EXTRA_NB_CUPS, 0);
+			mUserId = getIntent().getIntExtra(EXTRA_USER_ID, 0);
+		} else {
+			mNbCups = 0;
+			mUserId = 0;
+		}
+		
 		mRevCounter = 0;
 		mRotCounter = 0;
 		mProgress.setProgress(0);

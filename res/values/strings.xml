@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="service_name">WeightService</string>
     <string name="app_name">StroppyKettle</string>
     <string name="action_settings">Settings</string>
     <string name="action_monitor">Monitor</string>
@@ -23,11 +24,14 @@
 	
     <!-- Game Stroppy Activity -->
     <string name="image_desc">StroppyWheel</string>
+    <string name="game_title">Spin the wheel to power up the kettle</string>
     
     <!-- Login Stroppy Activity -->
-    <string name="login_button">Login!</string>
+    <string name="login_title">Who are you?</string>
+    <string name="adding">+add</string>
     
      <!-- Cups Stroppy Activity -->
-    <string name="cups_button">Launch Kettle</string>
+     <string name="cups_title">Hi %1$s! How many cups do you need?</string>
+     <string name="cups_button">Launch Kettle</string>
     <string name="indicators">indicators</string>
 </resources>

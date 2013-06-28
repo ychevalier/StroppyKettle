@@ -1,18 +1,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:padding="@dimen/std_margin" >
 
     <ToggleButton
         android:id="@+id/powerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/std_margin"
         android:layout_alignParentBottom="true" />
 
     <ScrollView
+        android:id="@+id/scroll_monitor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/powerButton" >
+        android:layout_above="@id/powerButton" >
 
         <TextView
             android:id="@+id/monitor_text"

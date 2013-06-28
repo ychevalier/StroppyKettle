@@ -3,13 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+    
     <android.support.v4.view.ViewPager
         android:id="@+id/cups_selector"
         android:layout_width="match_parent"
         android:layout_height="@dimen/selector_height"
         android:layout_centerInParent="true"
         android:background="@drawable/number_picker" />
+    
+    <TextView
+        android:id="@+id/cups_title"
+        android:layout_above="@id/cups_selector"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/cups_title"
+        android:layout_marginLeft="@dimen/huge_margin"
+        android:layout_marginRight="@dimen/huge_margin"
+        android:textSize="@dimen/big_big_text" />
 
     <ImageView
         android:layout_width="@dimen/square_width"

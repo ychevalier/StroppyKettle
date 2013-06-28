@@ -11,6 +11,17 @@
         android:layout_centerInParent="true"
         android:scaleType="matrix"
         android:src="@drawable/tea_o" />
+    
+     <TextView
+        android:id="@+id/game_title"
+        android:layout_above="@id/teaView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/game_title"
+        android:layout_marginLeft="@dimen/huge_margin"
+        android:layout_marginRight="@dimen/huge_margin"
+        android:textSize="@dimen/big_text" />
 
     <ProgressBar
         android:id="@+id/progress_bar"

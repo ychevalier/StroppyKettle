@@ -26,15 +26,23 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
 	private static final String TAG = CupsStroppyActivity.class.getSimpleName();
-
+	
+	public static final String EXTRA_USER_ID = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.CupsStroppyActivity.EXTRA_USER_ID";
+	public static final String EXTRA_USER_NAME = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.CupsStroppyActivity.EXTRA_USER_NAME";
+	
 	private ViewPager mPager;
 	private int mNbCups;
+	
+	private TextView mTitle;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cups_stroppy);
 
+		
+		mTitle = (TextView) findViewById(R.id.cups_title);
+		
 		Button stroppyButton = (Button) findViewById(R.id.cups_button);
 		stroppyButton.setOnClickListener(this);
 
@@ -56,6 +64,17 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 	@Override
 	protected void onStart() {
 		super.onStart();
+		
+		String name = null;
+		if(getIntent() != null) {
+			name = getIntent().getStringExtra(EXTRA_USER_NAME);
+		}
+		if(name == null) {
+			name = "";
+		}
+		
+		mTitle.setText(String.format(getString(R.string.cups_title), name));
+		
 		mNbCups = 1;
 		if (mPager != null) {
 			mPager.setCurrentItem(mNbCups, false);

@@ -15,9 +15,6 @@ public abstract class GenericActivity extends FragmentActivity {
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
 	private static final String TAG = GenericActivity.class.getSimpleName();
 
-	// private ConnectionReceiver mAmarinoReceiver;
-	// protected boolean mIsConnected;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -27,43 +24,7 @@ public abstract class GenericActivity extends FragmentActivity {
 		
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		// mAmarinoReceiver = new ConnectionReceiver();
-		// mIsConnected = false;
 	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-
-		/*
-		 * registerReceiver(mAmarinoReceiver, new IntentFilter(
-		 * AmarinoIntent.ACTION_CONNECTED)); registerReceiver(mAmarinoReceiver,
-		 * new IntentFilter( AmarinoIntent.ACTION_CONNECTION_FAILED));
-		 * registerReceiver(mAmarinoReceiver, new IntentFilter(
-		 * AmarinoIntent.ACTION_DISCONNECTED));
-		 * registerReceiver(mAmarinoReceiver, new IntentFilter(
-		 * AmarinoIntent.ACTION_PAIRING_REQUESTED));
-		 */
-
-		// TODO : No more bluetooth for now
-		// Amarino.connect(this, StroppyKettleApplication.DEVICE_ADDRESS);
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
-		// unregisterReceiver(mAmarinoReceiver);
-	}
-
-	/*
-	 * private class ConnectionReceiver extends BroadcastReceiver {
-	 * 
-	 * @Override public void onReceive(Context context, Intent intent) { if
-	 * (intent.getAction().equals(AmarinoIntent.ACTION_CONNECTED)) { if
-	 * (DEBUG_MODE) { Log.d(TAG, "I am connected"); } mIsConnected = true; }
-	 * else { if (DEBUG_MODE) { Log.d(TAG, "Trouble, I can't connect..."); }
-	 * mIsConnected = false; } } }
-	 */
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

@@ -1,0 +1,207 @@
+package uk.ac.bham.cs.stroppykettle_v2.provider;
+
+import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
+import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract.Interactions;
+import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract.Users;
+import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleDatabase.Tables;
+import android.content.ContentProvider;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.UriMatcher;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
+import android.net.Uri;
+
+public class StroppyKettleProvider extends ContentProvider {
+
+	public static final Boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
+	protected static final String TAG = StroppyKettleProvider.class
+			.getSimpleName();
+
+	private static final int USERS = 10;
+	private static final int USERS_ID = 11;
+	private static final int USERS_ID_INTERACTIONS = 12;
+
+	private static final int INTERACTIONS = 20;
+	private static final int INTERACTIONS_ID = 21;
+
+	static final String UNDERSCORE = "_";
+	static final String SLASH = "/";
+	static final String STAR = "*";
+	static final String ALL = "all";
+
+	private StroppyKettleDatabase dbHelper;
+
+	private static final UriMatcher sUriMatcher = buildUriMatcher();
+
+	private static UriMatcher buildUriMatcher() {
+		final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
+		final String authority = StroppyKettleContract.CONTENT_AUTHORITY;
+		
+		matcher.addURI(authority, StroppyKettleContract.PATH_USERS, USERS);
+		matcher.addURI(authority, StroppyKettleContract.PATH_USERS + SLASH
+				+ STAR, USERS_ID);
+		matcher.addURI(authority, StroppyKettleContract.PATH_USERS + SLASH
+				+ STAR + SLASH + StroppyKettleContract.PATH_INTERACTIONS,
+				USERS_ID_INTERACTIONS);
+
+		matcher.addURI(authority, StroppyKettleContract.PATH_INTERACTIONS,
+				INTERACTIONS);
+		matcher.addURI(authority, StroppyKettleContract.PATH_INTERACTIONS + SLASH
+				+ STAR, INTERACTIONS_ID);
+
+		return matcher;
+	}
+
+	@Override
+	public String getType(Uri uri) {
+		final int match = sUriMatcher.match(uri);
+		switch (match) {
+		case USERS:
+			return StroppyKettleContract.Users.CONTENT_TYPE;
+		case USERS_ID:
+			return StroppyKettleContract.Users.CONTENT_ITEM_TYPE;
+		case USERS_ID_INTERACTIONS:
+			return StroppyKettleContract.Interactions.CONTENT_TYPE;
+		case INTERACTIONS:
+			return StroppyKettleContract.Interactions.CONTENT_TYPE;
+		case INTERACTIONS_ID:
+			return StroppyKettleContract.Interactions.CONTENT_ITEM_TYPE;
+		default:
+			throw new UnsupportedOperationException("Unknown uri: " + uri );
+		}
+	}
+
+	@Override
+	public boolean onCreate() {
+		dbHelper = new StroppyKettleDatabase(getContext());
+		return true;
+	}
+
+	@Override
+	public Uri insert(Uri uri, ContentValues values) {
+
+		final SQLiteDatabase db = dbHelper.getWritableDatabase();
+		final int match = sUriMatcher.match(uri);
+
+		switch (match) {
+		case USERS:
+		case USERS_ID:
+			long id = db.insertOrThrow(Tables.USERS, null, values);
+			getContext().getContentResolver().notifyChange(uri, null);
+			return ContentUris.withAppendedId(uri, id);
+		case INTERACTIONS:
+		case INTERACTIONS_ID:
+			long idBis = db.insertOrThrow(Tables.INTERACTIONS, null, values);
+			getContext().getContentResolver().notifyChange(uri, null);
+			return ContentUris.withAppendedId(uri, idBis);
+		case USERS_ID_INTERACTIONS:
+		default:
+			throw new UnsupportedOperationException("Unknown uri: " + uri);
+		}
+	}
+
+	@Override
+	public int update(Uri uri, ContentValues values, String selection,
+			String[] selectionArgs) {
+
+		String seg = uri.getLastPathSegment();
+		Integer id = Integer.valueOf(seg);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		final int match = sUriMatcher.match(uri);
+
+		switch (match) {
+		case USERS:
+		case USERS_ID:
+			try {
+				return db.update(Tables.USERS, values,
+						Users._ID + "=" + id, null);
+			} catch (Exception e) {
+				return db.update(Tables.USERS, values, selection,
+						selectionArgs);
+			}
+		case INTERACTIONS:
+		case INTERACTIONS_ID:
+			try {
+				return db.update(Tables.INTERACTIONS, values, Interactions._ID
+						+ "=" + id, null);
+			} catch (Exception e) {
+				return db.update(Tables.INTERACTIONS, values, selection,
+						selectionArgs);
+			}
+		case USERS_ID_INTERACTIONS:
+		default:
+			throw new UnsupportedOperationException("Unknown uri: " + uri);
+		}
+	}
+
+	@Override
+	public int delete(Uri uri, String selection, String[] selectionArgs) {
+		String seg = uri.getLastPathSegment();
+		Integer id = Integer.valueOf(seg);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		final int match = sUriMatcher.match(uri);
+
+		switch (match) {
+		case USERS:
+		case USERS_ID:
+			try {
+				return db.delete(Tables.USERS, Users._ID + "=" + id, null);
+			} catch (Exception e) {
+				return db.delete(Tables.USERS, selection, selectionArgs);
+			}
+		case INTERACTIONS:
+		case INTERACTIONS_ID:
+			try {
+				return db.delete(Tables.INTERACTIONS, Interactions._ID + "="
+						+ id, null);
+			} catch (Exception e) {
+				return db.delete(Tables.INTERACTIONS, selection, selectionArgs);
+			}
+		case USERS_ID_INTERACTIONS:
+		default:
+			throw new UnsupportedOperationException("Unknown uri: " + uri);
+		}
+	}
+
+	@Override
+	public Cursor query(Uri uri, String[] projection, String selection,
+			String[] selectionArgs, String sortOrder) {
+		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+		
+		String groupBy = null;
+		String having = null;
+		
+		int uriType = sUriMatcher.match(uri);
+		switch (uriType) {
+		case USERS_ID:
+			queryBuilder.setTables(Tables.USERS);
+			queryBuilder.appendWhere(Users._ID + "="
+					+ uri.getLastPathSegment());
+			break;
+		case USERS:
+			queryBuilder.setTables(Tables.USERS);
+			break;
+		case INTERACTIONS_ID:
+			queryBuilder.appendWhere(Interactions._ID + "="
+					+ uri.getLastPathSegment());
+			break;
+		case INTERACTIONS:
+			queryBuilder.setTables(Tables.INTERACTIONS);
+			break;
+		case USERS_ID_INTERACTIONS:
+			queryBuilder.setTables(Tables.INTERACTIONS);
+			queryBuilder.appendWhere(Interactions.INTERACTION_USER_ID + "="
+					+ StroppyKettleContract.Users.getUserIdFromUserInteractions(uri));
+			break;
+		default:
+			throw new IllegalArgumentException("Unknown URI : " + uri);
+		}
+
+		Cursor cursor = queryBuilder.query(dbHelper.getReadableDatabase(),
+				projection, selection, selectionArgs, groupBy, having, sortOrder);
+		cursor.setNotificationUri(getContext().getContentResolver(), uri);
+		return cursor;
+	}
+}
