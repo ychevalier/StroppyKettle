@@ -1,8 +1,5 @@
 package uk.ac.bham.cs.stroppykettle_v2.services;
 
-import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
-import uk.ac.bham.cs.stroppykettle_v2.protocols.BluetoothSerial;
-import uk.ac.bham.cs.stroppykettle_v2.receivers.ReceiverList;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,13 +10,21 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.util.Log;
+
 import at.abraxas.amarino.Amarino;
 import at.abraxas.amarino.AmarinoIntent;
+import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
+import uk.ac.bham.cs.stroppykettle_v2.protocols.BluetoothSerial;
+import uk.ac.bham.cs.stroppykettle_v2.receivers.ReceiverList;
 
 public class WeightService extends Service {
 
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
 	private static final String TAG = WeightService.class.getSimpleName();
+
+    public final int[] mWeightTab = {215, 252, 288, 331, 375, 413, 460};
+
+    public final float ERROR = 0.2f;
 
 	// This is the object that receives interactions from clients. See
 	// RemoteService for a more complete example.
@@ -28,13 +33,15 @@ public class WeightService extends Service {
 	private boolean mIsConnected;
 	private AmarinoReceiver mAmarinoReceiver;
 
-	private int mLastWeight = 0;
+	private float mLastWeight;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 
 		mMessenger = new Messenger(new IncomingHandler());
+
+        mLastWeight = 0f;
 
 		mIsConnected = false;
 		mAmarinoReceiver = new AmarinoReceiver();
@@ -79,9 +86,45 @@ public class WeightService extends Service {
 				BluetoothSerial.POWER_EVENT, onoff ? 1 : 0);
 	}
 	
-	private int getLastWeight() {
+	private float getLastWeight() {
 		return mLastWeight;
 	}
+
+    private float getNbCups(int weight) {
+
+        int lowBound = -1;
+        int upBound = -1;
+
+        for(int i = 0; i < mWeightTab.length; i++) {
+            if(weight < mWeightTab[i]) {
+                upBound = i;
+                lowBound = i-1;
+                break;
+            }
+        }
+
+        if(lowBound != -1 && upBound != -1) {
+            float measure = (float)(weight - mWeightTab[lowBound]) / (float)(mWeightTab[upBound] - mWeightTab[lowBound]);
+
+            if(DEBUG_MODE) {
+                Log.d(TAG, "Weight : " + weight +  ", Low : " + lowBound + ", Up : " + upBound + ", Measure : " + measure);
+            }
+
+            if(measure < ERROR) {
+                return lowBound;
+            } else if(measure > 1 - ERROR) {
+                return upBound;
+            } else {
+                return lowBound + measure;
+            }
+        // Too much water.
+        } else if(lowBound == -1 && upBound == -1) {
+                return mWeightTab.length - 1;
+        // Not enough 1 cup/empty/nothing
+        } else {
+            return -1;
+        }
+    }
 
 	private class AmarinoReceiver extends BroadcastReceiver {
 		@Override
@@ -94,8 +137,11 @@ public class WeightService extends Service {
 				mIsConnected = true;
 			} else if (intent.getAction().equals(AmarinoIntent.ACTION_RECEIVED)) {
 				try {
-					mLastWeight = Integer.parseInt(intent
+					int weight = Integer.parseInt(intent
 							.getStringExtra(AmarinoIntent.EXTRA_DATA));
+
+                    mLastWeight = getNbCups(weight);
+
 					Intent i = new Intent(ReceiverList.WEIGHT_RECEIVER);
 					i.putExtra(ReceiverList.EXTRA_WEIGHT, mLastWeight);
 					sendBroadcast(i);
