@@ -26,7 +26,7 @@ public class WeightService extends Service {
 	private Messenger mMessenger;
 
 	private boolean mIsConnected;
-	private WeightReceiver mWeightReceiver;
+	private AmarinoReceiver mAmarinoReceiver;
 
 	private int mLastWeight = 0;
 
@@ -37,17 +37,17 @@ public class WeightService extends Service {
 		mMessenger = new Messenger(new IncomingHandler());
 
 		mIsConnected = false;
-		mWeightReceiver = new WeightReceiver();
+		mAmarinoReceiver = new AmarinoReceiver();
 
-		registerReceiver(mWeightReceiver, new IntentFilter(
+		registerReceiver(mAmarinoReceiver, new IntentFilter(
 				AmarinoIntent.ACTION_CONNECTED));
-		registerReceiver(mWeightReceiver, new IntentFilter(
+		registerReceiver(mAmarinoReceiver, new IntentFilter(
 				AmarinoIntent.ACTION_CONNECTION_FAILED));
-		registerReceiver(mWeightReceiver, new IntentFilter(
+		registerReceiver(mAmarinoReceiver, new IntentFilter(
 				AmarinoIntent.ACTION_DISCONNECTED));
-		registerReceiver(mWeightReceiver, new IntentFilter(
+		registerReceiver(mAmarinoReceiver, new IntentFilter(
 				AmarinoIntent.ACTION_PAIRING_REQUESTED));
-		registerReceiver(mWeightReceiver, new IntentFilter(
+		registerReceiver(mAmarinoReceiver, new IntentFilter(
 				AmarinoIntent.ACTION_RECEIVED));
 	}
 
@@ -71,11 +71,11 @@ public class WeightService extends Service {
 		super.onDestroy();
 
 		Amarino.disconnect(this, StroppyKettleApplication.DEVICE_ADDRESS);
-		unregisterReceiver(mWeightReceiver);
+		unregisterReceiver(mAmarinoReceiver);
 	}
 
-	private void sendPowerMessage(Context c, boolean onoff) {
-		Amarino.sendDataToArduino(c, StroppyKettleApplication.DEVICE_ADDRESS,
+	private void sendPowerMessage(boolean onoff) {
+		Amarino.sendDataToArduino(this, StroppyKettleApplication.DEVICE_ADDRESS,
 				BluetoothSerial.POWER_EVENT, onoff ? 1 : 0);
 	}
 	
@@ -83,7 +83,7 @@ public class WeightService extends Service {
 		return mLastWeight;
 	}
 
-	public class WeightReceiver extends BroadcastReceiver {
+	private class AmarinoReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
@@ -113,7 +113,7 @@ public class WeightService extends Service {
 		}
 	}
 
-	class IncomingHandler extends Handler {
+	private class IncomingHandler extends Handler {
 
 		@Override
 		public void handleMessage(Message msg) 
