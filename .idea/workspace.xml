@@ -22,12 +22,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="751ef8c3-49ad-4f4b-95f0-70ab03c05c8c" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/GenericActivity.java" afterPath="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/GenericActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/MonitorActivity.java" afterPath="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/MonitorActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/arduino/StroppyScale/StroppyScale.pde" afterPath="$PROJECT_DIR$/arduino/StroppyScale/StroppyScale.pde" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/services/WeightService.java" afterPath="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/services/WeightService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/layout/activity_monitor.xml" afterPath="$PROJECT_DIR$/res/layout/activity_monitor.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/values/strings.xml" afterPath="$PROJECT_DIR$/res/values/strings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="StroppyKettle.iws" />
@@ -103,7 +97,7 @@
       <file leaf-file-name="WeightService.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/services/WeightService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="41" column="19" selection-start="1349" selection-end="1349" vertical-scroll-proportion="0.0" vertical-offset="375" max-vertical-offset="2820">
+            <state line="41" column="19" selection-start="1349" selection-end="1349" vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="2820">
               <folding />
             </state>
           </provider>
@@ -112,7 +106,7 @@
       <file leaf-file-name="activity_monitor.xml" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/res/layout/activity_monitor.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1" column="16" selection-start="91" selection-end="91" vertical-scroll-proportion="0.024549918" vertical-offset="0" max-vertical-offset="795">
+            <state line="1" column="16" selection-start="91" selection-end="91" vertical-scroll-proportion="0.024630541" vertical-offset="0" max-vertical-offset="795">
               <folding />
             </state>
           </provider>
@@ -124,7 +118,7 @@
       <file leaf-file-name="MonitorActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/MonitorActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="26" selection-start="1577" selection-end="1577" vertical-scroll-proportion="0.0" vertical-offset="660" max-vertical-offset="1635">
+            <state line="45" column="26" selection-start="1577" selection-end="1577" vertical-scroll-proportion="0.0" vertical-offset="705" max-vertical-offset="1635">
               <folding />
             </state>
           </provider>
@@ -133,7 +127,7 @@
       <file leaf-file-name="GenericActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/GenericActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="103" column="26" selection-start="3284" selection-end="3284" vertical-scroll-proportion="0.0" vertical-offset="1530" max-vertical-offset="2205">
+            <state line="107" column="26" selection-start="3321" selection-end="3321" vertical-scroll-proportion="0.0" vertical-offset="1635" max-vertical-offset="2265">
               <folding />
             </state>
           </provider>
@@ -165,9 +159,9 @@
         <option value="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/utils/Utils.java" />
         <option value="$PROJECT_DIR$/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/GenericActivity.java" />
-        <option value="$PROJECT_DIR$/res/layout/activity_monitor.xml" />
         <option value="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/MonitorActivity.java" />
         <option value="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/services/WeightService.java" />
+        <option value="$PROJECT_DIR$/res/layout/activity_monitor.xml" />
       </list>
     </option>
   </component>
@@ -520,6 +514,11 @@
       <created>1372543011196</created>
       <updated>1372543011196</updated>
     </task>
+    <task id="LOCAL-00001" summary="Added service messaging">
+      <created>1372789678232</created>
+      <updated>1372789678232</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -616,9 +615,9 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
     <option name="LAST_COMMIT_MESSAGE" value="Added service messaging" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
-    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
-    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
     <option name="FILE_HISTORY_DIALOG_COMMENTS_SPLITTER_PROPORTION" value="0.8" />
     <option name="FILE_HISTORY_DIALOG_SPLITTER_PROPORTION" value="0.5" />
@@ -718,7 +717,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/GenericActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="103" column="26" selection-start="3284" selection-end="3284" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1950">
+        <state line="107" column="26" selection-start="3321" selection-end="3321" vertical-scroll-proportion="0.0" vertical-offset="1635" max-vertical-offset="2265">
           <folding />
         </state>
       </provider>
@@ -732,7 +731,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/res/layout/activity_monitor.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="16" selection-start="91" selection-end="91" vertical-scroll-proportion="0.024549918" vertical-offset="0" max-vertical-offset="795">
+        <state line="1" column="16" selection-start="91" selection-end="91" vertical-scroll-proportion="0.024630541" vertical-offset="0" max-vertical-offset="795">
           <folding />
         </state>
       </provider>
