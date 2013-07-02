@@ -1,8 +1,7 @@
 package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 
-import android.content.Context;
 import android.content.BroadcastReceiver;
-
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -44,6 +43,9 @@ public class MonitorActivity extends GenericActivity implements OnClickListener 
         Button clearBt = (Button) findViewById(R.id.clearButton);
         clearBt.setOnClickListener(this);
 
+        Button connect = (Button) findViewById(R.id.connectButton);
+        connect.setOnClickListener(this);
+
         mWeightReceiver = new WeightReceiver();
     }
 
@@ -53,6 +55,8 @@ public class MonitorActivity extends GenericActivity implements OnClickListener 
 
         registerReceiver(mWeightReceiver, new IntentFilter(
                 ReceiverList.WEIGHT_RECEIVER));
+
+        getLastWeight();
     }
 
     @Override
@@ -62,14 +66,28 @@ public class MonitorActivity extends GenericActivity implements OnClickListener 
         unregisterReceiver(mWeightReceiver);
     }
 
+    private void setMonitorScreen(float newWeight) {
+        mWeightText.setText(mWeightText.getText() + "\n" + newWeight);
+
+        mScroll.post(new Runnable() {
+            @Override
+            public void run() {
+                mScroll.fullScroll(View.FOCUS_DOWN);
+            }
+        });
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.powerButton:
-                //WeightService.sendPowerMessage(this, mPowerButton.isChecked());
+                sendPowerMessage(mPowerButton.isChecked());
                 break;
             case R.id.clearButton:
                 mWeightText.setText("");
+                break;
+            case R.id.connectButton:
+                toggleConnect();
                 break;
         }
     }
@@ -78,14 +96,8 @@ public class MonitorActivity extends GenericActivity implements OnClickListener 
         @Override
         public void onReceive(Context context, Intent intent) {
             float weight = intent.getFloatExtra(ReceiverList.EXTRA_WEIGHT, 0f);
-            mWeightText.setText(mWeightText.getText() + "\n" + weight);
 
-            mScroll.post(new Runnable() {
-                @Override
-                public void run() {
-                    mScroll.fullScroll(View.FOCUS_DOWN);
-                }
-            });
+            setMonitorScreen(weight);
         }
     }
 }

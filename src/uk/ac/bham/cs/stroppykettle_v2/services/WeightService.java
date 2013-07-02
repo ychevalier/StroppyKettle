@@ -22,6 +22,10 @@ public class WeightService extends Service {
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
 	private static final String TAG = WeightService.class.getSimpleName();
 
+    public static final int MSG_TOGGLE_POWER = 1;
+    public static final int MSG_GET_LAST = 2;
+    public static final int MSG_RECONNECT = 3;
+
     public final int[] mWeightTab = {215, 252, 288, 331, 375, 413, 460};
 
     public final float ERROR = 0.2f;
@@ -35,7 +39,9 @@ public class WeightService extends Service {
 
 	private float mLastWeight;
 
-	@Override
+    private boolean mToggleConnect = true;
+
+    @Override
 	public void onCreate() {
 		super.onCreate();
 
@@ -81,17 +87,14 @@ public class WeightService extends Service {
 		unregisterReceiver(mAmarinoReceiver);
 	}
 
-	private void sendPowerMessage(boolean onoff) {
-		Amarino.sendDataToArduino(this, StroppyKettleApplication.DEVICE_ADDRESS,
-				BluetoothSerial.POWER_EVENT, onoff ? 1 : 0);
-	}
-	
-	private float getLastWeight() {
-		return mLastWeight;
-	}
+    private void sendPowerMessage(int power) {
+        Amarino.sendDataToArduino(this, StroppyKettleApplication.DEVICE_ADDRESS,
+                BluetoothSerial.POWER_EVENT, power);
+    }
 
-    private float getNbCups(int weight) {
+    private float getNbCups(float weight) {
 
+        /*
         int lowBound = -1;
         int upBound = -1;
 
@@ -124,9 +127,17 @@ public class WeightService extends Service {
         } else {
             return -1;
         }
+        */
+        return weight;
     }
 
-	private class AmarinoReceiver extends BroadcastReceiver {
+    private void broadcastWeight(float weight) {
+        Intent i = new Intent(ReceiverList.WEIGHT_RECEIVER);
+        i.putExtra(ReceiverList.EXTRA_WEIGHT, mLastWeight);
+        sendBroadcast(i);
+    }
+
+    private class AmarinoReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
@@ -137,15 +148,13 @@ public class WeightService extends Service {
 				mIsConnected = true;
 			} else if (intent.getAction().equals(AmarinoIntent.ACTION_RECEIVED)) {
 				try {
-					int weight = Integer.parseInt(intent
-							.getStringExtra(AmarinoIntent.EXTRA_DATA));
+                    float weight = Float.parseFloat(intent
+                            .getStringExtra(AmarinoIntent.EXTRA_DATA));
 
                     mLastWeight = getNbCups(weight);
 
-					Intent i = new Intent(ReceiverList.WEIGHT_RECEIVER);
-					i.putExtra(ReceiverList.EXTRA_WEIGHT, mLastWeight);
-					sendBroadcast(i);
-				} catch (NumberFormatException e) {
+                    broadcastWeight(mLastWeight);
+                } catch (NumberFormatException e) {
 					if (DEBUG_MODE) {
 						e.printStackTrace();
 					}
@@ -165,13 +174,22 @@ public class WeightService extends Service {
 		public void handleMessage(Message msg) 
 		{
 			switch (msg.what) {
-			// we will only have one client here
-			//case MSG_REGISTER_CLIENT:
-				//mClient = msg.replyTo;
-				//if(!wifiConnected) onNetworkDisconnect();
-				//break;
+                case MSG_TOGGLE_POWER:
+                    sendPowerMessage(msg.arg1);
+                    break;
+                case MSG_GET_LAST:
+                    broadcastWeight(mLastWeight);
+                    break;
+                case MSG_RECONNECT:
+                    if (mToggleConnect) {
+                        Amarino.disconnect(WeightService.this, StroppyKettleApplication.DEVICE_ADDRESS);
 
-			default:
+                    } else {
+                        Amarino.connect(WeightService.this, StroppyKettleApplication.DEVICE_ADDRESS);
+                    }
+                    mToggleConnect = !mToggleConnect;
+                    break;
+                default:
 				super.handleMessage(msg);
 			}
 		}

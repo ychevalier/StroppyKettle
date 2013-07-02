@@ -39,4 +39,5 @@
 
     <!-- Monitor Activity -->
     <string name="clear">Clear</string>
+    <string name="connect">Connect</string>
 </resources>
