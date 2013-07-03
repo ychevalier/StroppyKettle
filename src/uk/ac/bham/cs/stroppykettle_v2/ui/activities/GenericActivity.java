@@ -84,31 +84,25 @@ public abstract class GenericActivity extends FragmentActivity {
     }
 
     protected void sendPowerMessage(boolean onoff) {
-        if (!mBound) return;
-        // Create and send a message to the service, using a supported 'what' value
-        Message msg = Message.obtain(null, WeightService.MSG_TOGGLE_POWER, onoff ? 1 : 0, 0);
-        try {
-            mService.send(msg);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        sendMessage(WeightService.MSG_TOGGLE_POWER);
     }
 
     protected void getLastWeight() {
-        if (!mBound) return;
-        // Create and send a message to the service, using a supported 'what' value
-        Message msg = Message.obtain(null, WeightService.MSG_GET_LAST, 0, 0);
-        try {
-            mService.send(msg);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        sendMessage(WeightService.MSG_GET_LAST);
     }
 
-    protected void toggleConnect() {
+    protected void connect() {
+        sendMessage(WeightService.MSG_CONNECT);
+    }
+
+    protected void disconnect() {
+        sendMessage(WeightService.MSG_DISCONNECT);
+    }
+
+    private void sendMessage(int msgType) {
         if (!mBound) return;
         // Create and send a message to the service, using a supported 'what' value
-        Message msg = Message.obtain(null, WeightService.MSG_RECONNECT, 0, 0);
+        Message msg = Message.obtain(null, msgType, 0, 0);
         try {
             mService.send(msg);
         } catch (RemoteException e) {

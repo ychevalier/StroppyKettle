@@ -22,6 +22,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="751ef8c3-49ad-4f4b-95f0-70ab03c05c8c" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/GenericActivity.java" afterPath="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/GenericActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/MonitorActivity.java" afterPath="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/MonitorActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/arduino/StroppyScale/StroppyScale.pde" afterPath="$PROJECT_DIR$/arduino/StroppyScale/StroppyScale.pde" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/services/WeightService.java" afterPath="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/services/WeightService.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/layout/activity_monitor.xml" afterPath="$PROJECT_DIR$/res/layout/activity_monitor.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/values/strings.xml" afterPath="$PROJECT_DIR$/res/values/strings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="StroppyKettle.iws" />
@@ -94,31 +100,34 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="WeightService.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="WeightService.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/services/WeightService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="41" column="19" selection-start="1349" selection-end="1349" vertical-scroll-proportion="0.0" vertical-offset="420" max-vertical-offset="2820">
-              <folding />
+            <state line="32" column="0" selection-start="1154" selection-end="1154" vertical-scroll-proportion="0.6115108" vertical-offset="0" max-vertical-offset="3210">
+              <folding>
+                <element signature="e#1194#1441#0" expanded="true" />
+                <element signature="e#1434#1435#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="activity_monitor.xml" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/res/layout/activity_monitor.xml">
+      <file leaf-file-name="SettingsActivity.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/SettingsActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="1" column="16" selection-start="91" selection-end="91" vertical-scroll-proportion="0.024630541" vertical-offset="0" max-vertical-offset="795">
-              <folding />
+            <state line="97" column="36" selection-start="3142" selection-end="3199" vertical-scroll-proportion="0.0" vertical-offset="848" max-vertical-offset="1335">
+              <folding>
+                <element signature="e#3199#3269#0" expanded="true" />
+                <element signature="e#3262#3263#0" expanded="true" />
+              </folding>
             </state>
-          </provider>
-          <provider editor-type-id="android-designer">
-            <state />
           </provider>
         </entry>
       </file>
       <file leaf-file-name="MonitorActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/MonitorActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="26" selection-start="1577" selection-end="1577" vertical-scroll-proportion="0.0" vertical-offset="705" max-vertical-offset="1635">
+            <state line="90" column="22" selection-start="2768" selection-end="2768" vertical-scroll-proportion="0.0" vertical-offset="720" max-vertical-offset="1455">
               <folding />
             </state>
           </provider>
@@ -127,7 +136,7 @@
       <file leaf-file-name="GenericActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/GenericActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="107" column="26" selection-start="3321" selection-end="3321" vertical-scroll-proportion="0.0" vertical-offset="1635" max-vertical-offset="2265">
+            <state line="90" column="40" selection-start="2729" selection-end="2729" vertical-scroll-proportion="0.0" vertical-offset="971" max-vertical-offset="1920">
               <folding />
             </state>
           </provider>
@@ -157,11 +166,11 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/utils/Utils.java" />
-        <option value="$PROJECT_DIR$/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/res/layout/activity_monitor.xml" />
         <option value="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/GenericActivity.java" />
+        <option value="$PROJECT_DIR$/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/MonitorActivity.java" />
         <option value="$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/services/WeightService.java" />
-        <option value="$PROJECT_DIR$/res/layout/activity_monitor.xml" />
       </list>
     </option>
   </component>
@@ -199,6 +208,8 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -319,28 +330,8 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="StroppyKettle" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="StroppyKettle" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="layout" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -518,7 +509,11 @@
       <created>1372789678232</created>
       <updated>1372789678232</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Added service messaging">
+      <created>1372789686032</created>
+      <updated>1372789686032</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -548,22 +543,22 @@
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32791728" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32954547" sideWeight="0.6730486" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959481" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959481" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32695138" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3240059" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3264402" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32348597" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3293944" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959481" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298217" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24594156" sideWeight="0.6730486" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24554294" sideWeight="0.676514" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32791728" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32954547" sideWeight="0.676514" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -633,43 +628,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/GenericActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="103" column="26" selection-start="3284" selection-end="3284" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2205">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/MonitorActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="71" column="39" selection-start="2205" selection-end="2205" vertical-scroll-proportion="0.0" vertical-offset="1050" max-vertical-offset="1455">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/SettingsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="29" selection-start="675" selection-end="675" vertical-scroll-proportion="0.33333334" vertical-offset="118" max-vertical-offset="1500" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/res/layout/activity_settings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="0" selection-start="266" selection-end="266" vertical-scroll-proportion="0.2425876" vertical-offset="0" max-vertical-offset="450" />
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="585" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/utils/Utils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="0" selection-start="70" selection-end="70" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="195" />
-      </provider>
-    </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-17/android.jar!/android/os/Messenger.class">
       <provider selected="true" editor-type-id="text-editor">
         <state line="9" column="11" selection-start="301" selection-end="301" vertical-scroll-proportion="0.30150753" vertical-offset="0" max-vertical-offset="495" />
@@ -678,13 +636,6 @@
     <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/StroppyKettleApplication.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="7" column="13" selection-start="205" selection-end="205" vertical-scroll-proportion="0.1459854" vertical-offset="0" max-vertical-offset="465">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="25" selection-start="1539" selection-end="1539" vertical-scroll-proportion="0.7810219" vertical-offset="294" max-vertical-offset="720">
           <folding />
         </state>
       </provider>
@@ -708,35 +659,96 @@
         <state line="7" column="9" selection-start="191" selection-end="191" vertical-scroll-proportion="0.13867489" vertical-offset="0" max-vertical-offset="649" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/MonitorActivity.java">
+    <entry file="file://$PROJECT_DIR$/res/layout/activity_game_stroppy.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="26" selection-start="1577" selection-end="1577" vertical-scroll-proportion="0.0" vertical-offset="322" max-vertical-offset="1350">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="622">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/activity_login_stroppy.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="609">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/GameStroppyActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="28" column="101" selection-start="1181" selection-end="1181" vertical-scroll-proportion="0.39379475" vertical-offset="0" max-vertical-offset="3330">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/GenericActivity.java">
+    <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/LoginStroppyActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="107" column="26" selection-start="3321" selection-end="3321" vertical-scroll-proportion="0.0" vertical-offset="1635" max-vertical-offset="2265">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/services/WeightService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="19" selection-start="1349" selection-end="1349" vertical-scroll-proportion="0.0" vertical-offset="375" max-vertical-offset="2820">
+        <state line="52" column="48" selection-start="2035" selection-end="2035" vertical-scroll-proportion="-0.06944445" vertical-offset="420" max-vertical-offset="1830">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/res/layout/activity_monitor.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="16" selection-start="91" selection-end="91" vertical-scroll-proportion="0.024630541" vertical-offset="0" max-vertical-offset="795">
+        <state line="31" column="38" selection-start="1242" selection-end="1242" vertical-scroll-proportion="0.0" vertical-offset="240" max-vertical-offset="885">
           <folding />
         </state>
       </provider>
       <provider editor-type-id="android-designer">
         <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="42" column="33" selection-start="1587" selection-end="1587" vertical-scroll-proportion="0.0" vertical-offset="305" max-vertical-offset="735">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/fragments/SettingsFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="13" selection-start="396" selection-end="396" vertical-scroll-proportion="-0.50359714" vertical-offset="270" max-vertical-offset="1020">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/GenericActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="90" column="40" selection-start="2729" selection-end="2729" vertical-scroll-proportion="0.0" vertical-offset="956" max-vertical-offset="1920">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/MonitorActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="90" column="22" selection-start="2768" selection-end="2768" vertical-scroll-proportion="0.0" vertical-offset="720" max-vertical-offset="1455">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/ui/activities/SettingsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="97" column="36" selection-start="3142" selection-end="3199" vertical-scroll-proportion="0.0" vertical-offset="848" max-vertical-offset="1335">
+          <folding>
+            <element signature="e#3199#3269#0" expanded="true" />
+            <element signature="e#3262#3263#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/uk/ac/bham/cs/stroppykettle_v2/services/WeightService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="0" selection-start="1154" selection-end="1154" vertical-scroll-proportion="0.6115108" vertical-offset="0" max-vertical-offset="3210">
+          <folding>
+            <element signature="e#1194#1441#0" expanded="true" />
+            <element signature="e#1434#1435#0" expanded="true" />
+          </folding>
+        </state>
       </provider>
     </entry>
   </component>

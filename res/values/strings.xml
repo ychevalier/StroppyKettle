@@ -39,5 +39,6 @@
 
     <!-- Monitor Activity -->
     <string name="clear">Clear</string>
-    <string name="connect">Connect</string>
+    <string name="connect">Con</string>
+    <string name="disconnect">Dis</string>
 </resources>

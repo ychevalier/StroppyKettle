@@ -22,8 +22,6 @@ float sampleArray[SAMPLE_SIZE];
 // Global used to count when to print average.
 int counter;
 
-int beginSteady;
-
 float previousAvg[NB_PREV_AVG];
 int indexPrevAvg;
 
@@ -31,8 +29,6 @@ float lastPrintedAvg;
 
 void setup()
 {
-    beginSteady = 0;
-
     counter = 0;
   	pinMode(SCALE_PIN, INPUT);
     pinMode(TX_PIN, OUTPUT);
@@ -106,7 +102,7 @@ void powerEvent(byte flag, byte numOfValues)
 
 void weightInfo(byte flag, byte numOfValues)
 {
-    meetAndroid.send(beginSteady);
+    meetAndroid.send(previousAvg[indexPrevAvg]);
 }
 
 void sendBit(boolean b) {

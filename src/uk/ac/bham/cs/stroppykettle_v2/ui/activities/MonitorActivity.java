@@ -46,6 +46,9 @@ public class MonitorActivity extends GenericActivity implements OnClickListener 
         Button connect = (Button) findViewById(R.id.connectButton);
         connect.setOnClickListener(this);
 
+        Button disconnect = (Button) findViewById(R.id.disconnectButton);
+        disconnect.setOnClickListener(this);
+
         mWeightReceiver = new WeightReceiver();
     }
 
@@ -84,10 +87,14 @@ public class MonitorActivity extends GenericActivity implements OnClickListener 
                 sendPowerMessage(mPowerButton.isChecked());
                 break;
             case R.id.clearButton:
-                mWeightText.setText("");
+                //mWeightText.setText("");
+                getLastWeight();
                 break;
             case R.id.connectButton:
-                toggleConnect();
+                connect();
+                break;
+            case R.id.disconnectButton:
+                disconnect();
                 break;
         }
     }

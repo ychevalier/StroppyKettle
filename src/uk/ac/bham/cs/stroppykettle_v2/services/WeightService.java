@@ -22,12 +22,26 @@ public class WeightService extends Service {
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
 	private static final String TAG = WeightService.class.getSimpleName();
 
-    public static final int MSG_TOGGLE_POWER = 1;
-    public static final int MSG_GET_LAST = 2;
-    public static final int MSG_RECONNECT = 3;
+    public static final int MSG_TOGGLE_POWER = 0;
+    public static final int MSG_GET_LAST = 1;
+    public static final int MSG_CONNECT = 2;
+    public static final int MSG_DISCONNECT = 3;
+
+    // Timeout is after 1000 milliseconds
+    // of having sent a message and receiving nothing
+    private static final int TIMEOUT = 1000;
+
+    private Runnable mTimeoutTrigger = new Runnable() {
+        public void run() {
+            if (mIsConnected) {
+                interactWithArduino(MSG_DISCONNECT, 0, true);
+            } else {
+                interactWithArduino(MSG_CONNECT, 0, true);
+            }
+        }
+    };
 
     public final int[] mWeightTab = {215, 252, 288, 331, 375, 413, 460};
-
     public final float ERROR = 0.2f;
 
 	// This is the object that receives interactions from clients. See
@@ -39,7 +53,7 @@ public class WeightService extends Service {
 
 	private float mLastWeight;
 
-    private boolean mToggleConnect = true;
+    private Handler mHandler;
 
     @Override
 	public void onCreate() {
@@ -49,7 +63,9 @@ public class WeightService extends Service {
 
         mLastWeight = 0f;
 
-		mIsConnected = false;
+        mHandler = new Handler();
+
+        mIsConnected = false;
 		mAmarinoReceiver = new AmarinoReceiver();
 
 		registerReceiver(mAmarinoReceiver, new IntentFilter(
@@ -62,16 +78,14 @@ public class WeightService extends Service {
 				AmarinoIntent.ACTION_PAIRING_REQUESTED));
 		registerReceiver(mAmarinoReceiver, new IntentFilter(
 				AmarinoIntent.ACTION_RECEIVED));
-	}
+        registerReceiver(mAmarinoReceiver, new IntentFilter(
+                AmarinoIntent.ACTION_CONNECTED_DEVICES));
+    }
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-
-		if (!mIsConnected) {
-			Amarino.connect(this, StroppyKettleApplication.DEVICE_ADDRESS);
-		}
-
-		return Service.START_NOT_STICKY;
+        interactWithArduino(MSG_CONNECT, 0, true);
+        return Service.START_NOT_STICKY;
 	}
 
 	@Override
@@ -82,15 +96,9 @@ public class WeightService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-
-		Amarino.disconnect(this, StroppyKettleApplication.DEVICE_ADDRESS);
-		unregisterReceiver(mAmarinoReceiver);
+        interactWithArduino(MSG_DISCONNECT, 0, false);
+        unregisterReceiver(mAmarinoReceiver);
 	}
-
-    private void sendPowerMessage(int power) {
-        Amarino.sendDataToArduino(this, StroppyKettleApplication.DEVICE_ADDRESS,
-                BluetoothSerial.POWER_EVENT, power);
-    }
 
     private float getNbCups(float weight) {
 
@@ -137,33 +145,69 @@ public class WeightService extends Service {
         sendBroadcast(i);
     }
 
+    private void interactWithArduino(int type, int arg, boolean setTimeout) {
+        switch (type) {
+            case MSG_TOGGLE_POWER:
+                Amarino.sendDataToArduino(this, StroppyKettleApplication.DEVICE_ADDRESS,
+                        BluetoothSerial.POWER_EVENT, arg);
+                break;
+            case MSG_GET_LAST:
+                Amarino.sendDataToArduino(this, StroppyKettleApplication.DEVICE_ADDRESS,
+                        BluetoothSerial.WEIGHT_INFO, 0);
+                break;
+            case MSG_CONNECT:
+                Amarino.connect(WeightService.this, StroppyKettleApplication.DEVICE_ADDRESS);
+                break;
+            case MSG_DISCONNECT:
+                Amarino.disconnect(WeightService.this, StroppyKettleApplication.DEVICE_ADDRESS);
+                break;
+        }
+
+        if (setTimeout && mHandler != null) {
+            mHandler.postDelayed(mTimeoutTrigger, TIMEOUT);
+        }
+    }
+
     private class AmarinoReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			if (intent.getAction().equals(AmarinoIntent.ACTION_CONNECTED)) {
-				if (DEBUG_MODE) {
+            // If here, that means that bluetooth is running.
+            if (mHandler != null) {
+                mHandler.removeCallbacks(mTimeoutTrigger);
+            }
+
+            String action = intent.getAction() == null ? "" : intent.getAction();
+            if (action.equals(AmarinoIntent.ACTION_CONNECTED)) {
+                if (DEBUG_MODE) {
 					Log.d(TAG, "I am connected!");
 				}
 				mIsConnected = true;
-			} else if (intent.getAction().equals(AmarinoIntent.ACTION_RECEIVED)) {
-				try {
-                    float weight = Float.parseFloat(intent
-                            .getStringExtra(AmarinoIntent.EXTRA_DATA));
+            } else if (action.equals(AmarinoIntent.ACTION_RECEIVED)) {
+                try {
+                    float weight = Float.parseFloat(intent.getStringExtra(AmarinoIntent.EXTRA_DATA));
+
+                    if (DEBUG_MODE) {
+                        Log.d(TAG, "I received a new weight : " + weight);
+                    }
 
                     mLastWeight = getNbCups(weight);
 
                     broadcastWeight(mLastWeight);
                 } catch (NumberFormatException e) {
-					if (DEBUG_MODE) {
-						e.printStackTrace();
-					}
-				}
-			} else {
-				if (DEBUG_MODE) {
-					Log.d(TAG, "Trouble, I can't connect...");
-				}
-				mIsConnected = false;
+                    if (DEBUG_MODE) {
+                        e.printStackTrace();
+                    }
+                }
+            } else if (action.equals(AmarinoIntent.ACTION_DISCONNECTED)) {
+                if (DEBUG_MODE) {
+                    Log.d(TAG, "Disconnected!");
+                }
+                mIsConnected = false;
+            } else {
+                if (DEBUG_MODE) {
+                    Log.d(TAG, "Trouble!!");
+                }
 			}
 		}
 	}
@@ -173,25 +217,7 @@ public class WeightService extends Service {
 		@Override
 		public void handleMessage(Message msg) 
 		{
-			switch (msg.what) {
-                case MSG_TOGGLE_POWER:
-                    sendPowerMessage(msg.arg1);
-                    break;
-                case MSG_GET_LAST:
-                    broadcastWeight(mLastWeight);
-                    break;
-                case MSG_RECONNECT:
-                    if (mToggleConnect) {
-                        Amarino.disconnect(WeightService.this, StroppyKettleApplication.DEVICE_ADDRESS);
-
-                    } else {
-                        Amarino.connect(WeightService.this, StroppyKettleApplication.DEVICE_ADDRESS);
-                    }
-                    mToggleConnect = !mToggleConnect;
-                    break;
-                default:
-				super.handleMessage(msg);
-			}
-		}
+            interactWithArduino(msg.what, msg.arg1, true);
+        }
 	}
 }
