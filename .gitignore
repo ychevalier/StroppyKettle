@@ -1,9 +1,11 @@
-*.class
-.idea/
 *.iml
+*.iws
+*.ipr
+.idea/
+.gradle/
+local.properties
 
-# Package Files #
-*.war
-*.ear
-out/
-bin/
+*/build/
+
+*~
+*.swp

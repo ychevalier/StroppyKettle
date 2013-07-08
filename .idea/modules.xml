@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/libraries/AmarinoLibrary/src/main/Amarino.iml" filepath="$PROJECT_DIR$/libraries/AmarinoLibrary/src/main/Amarino.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraries/AmarinoLibrary/AmarinoLibrary.iml" filepath="$PROJECT_DIR$/libraries/AmarinoLibrary/AmarinoLibrary.iml" />
       <module fileurl="file://$PROJECT_DIR$/StroppyKettle.iml" filepath="$PROJECT_DIR$/StroppyKettle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/StroppyKettle/StroppyKettle-StroppyKettle.iml" filepath="$PROJECT_DIR$/StroppyKettle/StroppyKettle-StroppyKettle.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/ViewPagerIndicator/ViewPagerIndicator.iml" filepath="$PROJECT_DIR$/libraries/ViewPagerIndicator/ViewPagerIndicator.iml" />
     </modules>
   </component>

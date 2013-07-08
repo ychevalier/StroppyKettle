@@ -1,7 +1,9 @@
 <component name="libraryTable">
   <library name="android-support-v4">
     <CLASSES>
+      <root url="jar://$PROJECT_DIR$/StroppyKettle/libs/android-support-v4.jar!/" />
       <root url="jar://$PROJECT_DIR$/libraries/ViewPagerIndicator/libs/android-support-v4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/StroppyKettle/build/exploded-bundles/ViewPagerIndicator.aar/libs/android-support-v4.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
