@@ -1,0 +1,3 @@
+include ':StroppyKettle'
+include ':libraries:AmarinoLibrary'
+include ':libraries:ViewPagerIndicator'
