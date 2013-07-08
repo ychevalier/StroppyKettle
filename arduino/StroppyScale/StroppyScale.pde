@@ -30,7 +30,7 @@ float lastPrintedAvg;
 void setup()
 {
     counter = 0;
-  	pinMode(SCALE_PIN, INPUT);
+    pinMode(SCALE_PIN, INPUT);
     pinMode(TX_PIN, OUTPUT);
 
     indexPrevAvg = 0;
@@ -40,25 +40,28 @@ void setup()
         previousAvg[i] = 0;
     }
 
-  	Serial.begin(115200);
+    Serial.begin(115200);
 
     meetAndroid.registerFunction(powerEvent, 'p');
     meetAndroid.registerFunction(weightInfo, 'i');
+    meetAndroid.registerFunction(alive, 'a');
 }
 
 
 void loop()
 {
-    
+
     meetAndroid.receive();
-   
+
     int weight = analogRead(SCALE_PIN);
     float avg = rollingAverage(sampleArray, SAMPLE_SIZE, weight);
 
 
     if(counter++ > PRINT_TIMEOUT) {
         counter = 0;
-        
+
+        //meetAndroid.send(avg);
+
         previousAvg[indexPrevAvg] = avg;
 
 
@@ -103,6 +106,12 @@ void powerEvent(byte flag, byte numOfValues)
 void weightInfo(byte flag, byte numOfValues)
 {
     meetAndroid.send(previousAvg[indexPrevAvg]);
+}
+
+void alive(byte flag, byte numOfValues)
+{
+    int toSend = 1;
+    meetAndroid.send(toSend);
 }
 
 void sendBit(boolean b) {

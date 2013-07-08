@@ -1,8 +1,10 @@
 package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -17,6 +19,7 @@ import android.view.WindowManager;
 
 import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
+import uk.ac.bham.cs.stroppykettle_v2.receivers.ReceiverList;
 import uk.ac.bham.cs.stroppykettle_v2.services.WeightService;
 
 public abstract class GenericActivity extends FragmentActivity {
@@ -24,116 +27,139 @@ public abstract class GenericActivity extends FragmentActivity {
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
 	private static final String TAG = GenericActivity.class.getSimpleName();
 
-    /**
-     * Messenger for communicating with the service.
-     */
-    protected Messenger mService = null;
+	private WeightReceiver mWeightReceiver;
 
-    /**
-     * Flag indicating whether we have called bind on the service.
-     */
-    protected boolean mBound;
+	/**
+	 * Messenger for communicating with the service.
+	 */
+	protected Messenger mService = null;
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            mService = new Messenger(service);
-            mBound = true;
-        }
+	/**
+	 * Flag indicating whether we have called bind on the service.
+	 */
+	protected boolean mBound;
 
-        public void onServiceDisconnected(ComponentName className) {
-            mService = null;
-            mBound = false;
-        }
-    };
+	private ServiceConnection mConnection = new ServiceConnection() {
+		public void onServiceConnected(ComponentName className, IBinder service) {
+			mService = new Messenger(service);
+			mBound = true;
+		}
 
+		public void onServiceDisconnected(ComponentName className) {
+			mService = null;
+			mBound = false;
+		}
+	};
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		//getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
 		//		WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		
+
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+		mWeightReceiver = new WeightReceiver();
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main, menu);
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        bindService(new Intent(this, WeightService.class), mConnection,
-                Context.BIND_AUTO_CREATE);
-    }
+	@Override
+	protected void onStart() {
+		super.onStart();
 
-    @Override
-    protected void onStop() {
-        super.onStop();
+		registerReceiver(mWeightReceiver, new IntentFilter(
+				ReceiverList.WEIGHT_RECEIVER));
 
-        // Unbind from the service
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
-    }
+		bindService(new Intent(this, WeightService.class), mConnection,
+				Context.BIND_AUTO_CREATE);
+	}
 
-    protected void sendPowerMessage(boolean onoff) {
-        sendMessage(WeightService.MSG_TOGGLE_POWER);
-    }
+	@Override
+	protected void onStop() {
+		super.onStop();
 
-    protected void getLastWeight() {
-        sendMessage(WeightService.MSG_GET_LAST);
-    }
+		unregisterReceiver(mWeightReceiver);
 
-    protected void connect() {
-        sendMessage(WeightService.MSG_CONNECT);
-    }
+		// Unbind from the service
+		if (mBound) {
+			unbindService(mConnection);
+			mBound = false;
+		}
+	}
 
-    protected void disconnect() {
-        sendMessage(WeightService.MSG_DISCONNECT);
-    }
+	protected void sendPowerMessage(boolean onoff) {
+		sendMessage(WeightService.MSG_TOGGLE_POWER, onoff ? 1 : 0);
+	}
 
-    private void sendMessage(int msgType) {
-        if (!mBound) return;
-        // Create and send a message to the service, using a supported 'what' value
-        Message msg = Message.obtain(null, msgType, 0, 0);
-        try {
-            mService.send(msg);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
+	protected void getCurrentWeight() {
+		sendMessage(WeightService.MSG_GET_CURRENT);
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+	protected void connect() {
+		sendMessage(WeightService.MSG_CONNECT);
+	}
+
+	protected void disconnect() {
+		sendMessage(WeightService.MSG_DISCONNECT);
+	}
+
+	private void sendMessage(int msgType) {
+		sendMessage(msgType, 0);
+	}
+
+	private void sendMessage(int msgType, int arg) {
+		if (!mBound) return;
+		// Create and send a message to the service, using a supported 'what' value
+		Message msg = Message.obtain(null, msgType, arg, 0);
+		try {
+			mService.send(msg);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected abstract void receivedNewWeight(float weight);
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent i = null;
 		switch (item.getItemId()) {
-		case R.id.action_settings:
-			if(!(this instanceof SettingsActivity)) {
-				i = new Intent(this, SettingsActivity.class);
-			}
-			break;
-		case R.id.action_monitor:
-			if(!(this instanceof MonitorActivity)) {
-				i = new Intent(this, MonitorActivity.class);
-			}
-			break;
+			case R.id.action_settings:
+				if (!(this instanceof SettingsActivity)) {
+					i = new Intent(this, SettingsActivity.class);
+				}
+				break;
+			case R.id.action_monitor:
+				if (!(this instanceof MonitorActivity)) {
+					i = new Intent(this, MonitorActivity.class);
+				}
+				break;
 		}
 		if (i != null) {
 			startActivity(i);
-			
+
 			// We don't want to finish the main activity.
 			// Not really classy...
-			if(!(this instanceof AdminActivity)) {
+			if (!(this instanceof AdminActivity)) {
 				finish();
 			}
 		}
 		return true;
+	}
+
+	public class WeightReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			float weight = intent.getFloatExtra(ReceiverList.EXTRA_WEIGHT, 0f);
+			receivedNewWeight(weight);
+		}
 	}
 }

@@ -1,6 +1,5 @@
 package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 
-import uk.ac.bham.cs.stroppykettle_v2.R;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -10,7 +9,9 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
-public class GenericStroppyActivity extends GenericActivity implements
+import uk.ac.bham.cs.stroppykettle_v2.R;
+
+public abstract class GenericStroppyActivity extends GenericActivity implements
 		OnLongClickListener {
 
 	@Override
@@ -34,16 +35,16 @@ public class GenericStroppyActivity extends GenericActivity implements
 	@Override
 	public boolean onLongClick(View v) {
 		switch (v.getId()) {
-		case R.id.exit_button:
-			Intent i = new Intent(this, AdminActivity.class);
-			//i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-			startActivity(i);
-			//finish();
-			return true;
+			case R.id.exit_button:
+				Intent i = new Intent(this, AdminActivity.class);
+				//i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(i);
+				//finish();
+				return true;
 		}
 		return false;
 	}
-	
+
 	// It doesnt matter if the user want to go back
 	//@Override
 	//public void onBackPressed() {}

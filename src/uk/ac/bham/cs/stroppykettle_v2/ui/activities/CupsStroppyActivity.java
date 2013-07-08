@@ -1,12 +1,5 @@
 package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import uk.ac.bham.cs.stroppykettle_v2.R;
-import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
-import uk.ac.bham.cs.stroppykettle_v2.ui.adapters.CupsPagerAdapter;
-import uk.ac.bham.cs.stroppykettle_v2.ui.views.HalfScreenView;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -20,6 +13,14 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import uk.ac.bham.cs.stroppykettle_v2.R;
+import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
+import uk.ac.bham.cs.stroppykettle_v2.ui.adapters.CupsPagerAdapter;
+import uk.ac.bham.cs.stroppykettle_v2.ui.views.HalfScreenView;
 
 public class CupsStroppyActivity extends GenericStroppyActivity implements
 		OnClickListener, OnPageChangeListener {
@@ -79,6 +80,11 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 		if (mPager != null) {
 			mPager.setCurrentItem(mNbCups, false);
 		}
+	}
+
+	@Override
+	protected void receivedNewWeight(float weight) {
+
 	}
 
 	private List<View> getViews() {

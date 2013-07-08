@@ -1,13 +1,5 @@
 package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import uk.ac.bham.cs.stroppykettle_v2.R;
-import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
-import uk.ac.bham.cs.stroppykettle_v2.ui.adapters.SettingsPagerAdapter;
-import uk.ac.bham.cs.stroppykettle_v2.ui.fragments.SettingsFragment;
-import uk.ac.bham.cs.stroppykettle_v2.ui.views.CustomViewPager;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -16,6 +8,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 
 import com.viewpagerindicator.CirclePageIndicator;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import uk.ac.bham.cs.stroppykettle_v2.R;
+import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
+import uk.ac.bham.cs.stroppykettle_v2.ui.adapters.SettingsPagerAdapter;
+import uk.ac.bham.cs.stroppykettle_v2.ui.fragments.SettingsFragment;
+import uk.ac.bham.cs.stroppykettle_v2.ui.views.CustomViewPager;
 
 public class SettingsActivity extends GenericActivity implements
 		OnPageChangeListener {
@@ -46,6 +47,11 @@ public class SettingsActivity extends GenericActivity implements
 		mCurrentPosition = mPager.getCurrentItem();
 	}
 
+	@Override
+	protected void receivedNewWeight(float weight) {
+
+	}
+
 	private List<Fragment> getFragments() {
 		List<Fragment> fList = new ArrayList<Fragment>();
 
@@ -61,7 +67,7 @@ public class SettingsActivity extends GenericActivity implements
 
 	@Override
 	public void onPageScrolled(int position, float positionOffset,
-			int positionOffsetPixels) {
+							   int positionOffsetPixels) {
 	}
 
 	@Override
@@ -89,10 +95,10 @@ public class SettingsActivity extends GenericActivity implements
 
 		} else {
 			mCurrentPosition = position;
-			
+
 			// Position start from 0, and there is nbCups + 3 fragments.
 			// (nothing, empty and done).
-			if(position == StroppyKettleApplication.NUMBER_OF_CUPS + 2) {
+			if (position == StroppyKettleApplication.NUMBER_OF_CUPS + 2) {
 				mPager.setPagingEnabled(false);
 				Handler handler = new Handler();
 				handler.postDelayed(new Runnable() {

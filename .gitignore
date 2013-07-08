@@ -1,9 +1,9 @@
 *.class
+.idea/
+*.iml
 
 # Package Files #
-*.jar
 *.war
 *.ear
-*gradle*
 out/
 bin/

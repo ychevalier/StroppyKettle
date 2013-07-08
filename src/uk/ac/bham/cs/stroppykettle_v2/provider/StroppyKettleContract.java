@@ -10,23 +10,44 @@ public class StroppyKettleContract {
 	private static final Uri BASE_CONTENT_URI = Uri.parse("content://"
 			+ CONTENT_AUTHORITY);
 
+	public static final String PATH_LOGS = "logs";
 	public static final String PATH_USERS = "users";
 	public static final String PATH_INTERACTIONS = "interactions";
 
+	interface LogsColumns {
+		String LOG_ID = BaseColumns._ID;
+		String LOG_DATETIME = "datetime";
+		String LOG_PREVIOUS_WEIGHT = "prev_weight";
+		String LOG_WEIGHT = "weight";
+	}
+
 	interface UsersColumns {
-		String USER_ID = "_id";
+		String USER_ID = BaseColumns._ID;
 		String USER_NAME = "name";
 	}
 
 	interface InteractionsColumns {
-		String INTERACTION_ID = "_id";
+		String INTERACTION_ID = BaseColumns._ID;
 		String INTERACTION_DATETIME = "datetime";
 		String INTERACTION_CONDITION = "condition";
 		String INTERACTION_NB_CUPS = "nb_cups";
 		String INTERACTION_WEIGHT = "weight";
 		String INTERACTION_USER_ID = "user_id";
 	}
-	
+
+	public static class Logs implements LogsColumns, BaseColumns {
+		public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+				.appendPath(PATH_LOGS).build();
+
+		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.android.stroppykettle.log";
+		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.android.stroppykettle.log";
+
+		// Get One Log.
+		public static Uri buildLogsUri(String logId) {
+			return CONTENT_URI.buildUpon().appendPath(logId).build();
+		}
+	}
+
 	public static class Users implements UsersColumns, BaseColumns {
 		public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
 				.appendPath(PATH_USERS).build();
@@ -44,9 +65,9 @@ public class StroppyKettleContract {
 			return CONTENT_URI.buildUpon().appendPath(userId)
 					.appendPath(PATH_INTERACTIONS).build();
 		}
-		
+
 		public static String getUserIdFromUserInteractions(Uri uri) {
-		    return uri.getPathSegments().get(1);
+			return uri.getPathSegments().get(1);
 		}
 	}
 
