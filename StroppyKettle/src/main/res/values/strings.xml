@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="service_name">WeightService</string>
+    <string name="app_name">StroppyKettle</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_monitor">Monitor</string>
+
+    <!-- Main Activity -->
+    <string name="stroppy_button">Stroppy!</string>
+
+    <!-- Settings Fragment -->
+    <string name="remove_kettle">Remove the kettle</string>
+    <string name="empty_kettle">Put an empty kettle</string>
+    <string name="fill_kettle">Please fill</string>
+    <string name="cup">cup</string>
+    <string name="cups">cups</string>
+    <string name="exit_button">exit</string>
+    <string name="last_frame">Done!</string>
+
+    <!-- Settings Activity -->
+    <string name="dialog_confirm_title">Confirmation</string>
+    <string name="dialog_confirm_message">You are about to set up the previous state again, Are you
+        sure?
+    </string>
+
+    <!-- Game Stroppy Activity -->
+    <string name="image_desc">StroppyWheel</string>
+    <string name="game_title">Spin the wheel to power up the kettle</string>
+
+    <!-- Login Stroppy Activity -->
+    <string name="login_title">Who are you?</string>
+    <string name="adding">+add</string>
+
+    <!-- Cups Stroppy Activity -->
+    <string name="cups_title">Hi %1$s! How many cups do you need?</string>
+    <string name="cups_button">Launch Kettle</string>
+    <string name="indicators">indicators</string>
+
+    <!-- Monitor Activity -->
+    <string name="clear">Clear</string>
+    <string name="connect">Con</string>
+    <string name="disconnect">Dis</string>
+</resources>

@@ -1,0 +1,12 @@
+apply plugin: 'android'
+
+dependencies {
+    compile 'com.android.support:support-v4:13.0.0'
+    compile project(':libraries:AmarinoLibrary')
+    compile project(':libraries:ViewPagerIndicator')
+}
+
+android {
+    compileSdkVersion 17
+    buildToolsVersion "17.0.0"
+}
