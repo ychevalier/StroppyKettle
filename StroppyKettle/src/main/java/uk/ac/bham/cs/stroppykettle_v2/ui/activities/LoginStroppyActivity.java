@@ -62,6 +62,8 @@ public class LoginStroppyActivity extends GenericStroppyActivity implements
 	@Override
 	protected void onStart() {
 		super.onStart();
+		// TODO bounding problem.. this does not work.
+		//sendPowerMessage(false);
 		getSupportLoaderManager().restartLoader(0, null, this);
 	}
 

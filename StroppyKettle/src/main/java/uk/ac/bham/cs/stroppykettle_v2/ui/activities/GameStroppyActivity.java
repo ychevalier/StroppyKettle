@@ -1,12 +1,14 @@
 package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -14,11 +16,11 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Calendar;
 
 import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
+import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract;
 
 public class GameStroppyActivity extends GenericStroppyActivity implements OnTouchListener,
 		OnGlobalLayoutListener {
@@ -26,24 +28,46 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
 	private static final String TAG = GameStroppyActivity.class.getSimpleName();
 
+	public static final String EXTRA_DISCREPANCY = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_DISCREPENCY";
+	public static final String EXTRA_WEIGHT = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_WEIGHT";
 	public static final String EXTRA_NB_CUPS = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_NB_CUPS";
 	public static final String EXTRA_USER_ID = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_USER_ID";
 
-	class mTask extends TimerTask {
+	private static final int TIMEOUT = 10000;
+
+	private Runnable mTimeoutRunnable = new Runnable() {
+		@Override
+		public void run() {
+			timeIsOut();
+		}
+	};
+
+	private Runnable mDecrementRunnable = new Runnable() {
 		@Override
 		public void run() {
 			if (mProgress != null && mRevCounter > 0) {
 				mProgress.setProgress(--mRevCounter);
+
+				// If we are here, then the progress is down.
+				if(mRevCounter == 0) {
+					timeIsOut();
+				} else {
+					mHandler.postDelayed(mDecrementRunnable, SEC_GO_DOWN);
+				}
 			}
 		}
-	}
-
-	;
+	};
 
 	private static final int TRESHOLD = 40;
-	private static final int NB_REVOLUTION = 5;
+	private static int NB_REVOLUTION = 20;
 
 	private static final int SEC_GO_DOWN = 1000;
+
+	private boolean mIsSuccess;
+
+	private long mUserId;
+	private float mWeight;
+	private int mNbCups;
 
 	private ImageView mWheelView;
 	private ProgressBar mProgress;
@@ -60,10 +84,7 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 
 	private double mStartAngle;
 
-	private Timer mTimer;
-
-	private int mNbCups;
-	private int mUserId;
+	private Handler mHandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,56 +95,73 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 		mWheelView.setOnTouchListener(this);
 
 		mProgress = (ProgressBar) findViewById(R.id.progress_bar);
-		mProgress.setMax(NB_REVOLUTION);
 
 		Bitmap imageOriginal = BitmapFactory.decodeResource(getResources(),
-				R.drawable.tea_o);
+				R.drawable.wheel);
 
 		mOriginalWidth = imageOriginal.getWidth();
 		mOriginalHeight = imageOriginal.getHeight();
-
 		mMatrix = new Matrix();
-
 		mWheelView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+
+		mIsSuccess = false;
+
+		mHandler = new Handler();
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
 
+		int discrepancy = 0;
 		if (getIntent() != null) {
 			mNbCups = getIntent().getIntExtra(EXTRA_NB_CUPS, 0);
-			mUserId = getIntent().getIntExtra(EXTRA_USER_ID, 0);
-		} else {
-			mNbCups = 0;
-			mUserId = 0;
+			mUserId = getIntent().getLongExtra(EXTRA_USER_ID, 0);
+			discrepancy = getIntent().getIntExtra(EXTRA_DISCREPANCY, 0);
+			mWeight = getIntent().getFloatExtra(EXTRA_WEIGHT, 0);
 		}
+
+		NB_REVOLUTION += (discrepancy * NB_REVOLUTION) / 100;
+		mProgress.setMax(NB_REVOLUTION);
 
 		mRevCounter = 0;
 		mRotCounter = 0;
 		mProgress.setProgress(0);
 
-		mTimer = new Timer();
-		mTimer.scheduleAtFixedRate(new mTask(), SEC_GO_DOWN, SEC_GO_DOWN);
+		mHandler.postDelayed(mTimeoutRunnable, TIMEOUT);
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
 
-		if (mTimer != null) {
-			mTimer.cancel();
-			mTimer.purge();
-			mTimer = null;
+		if(mHandler != null) {
+			mHandler.removeCallbacks(mDecrementRunnable);
+			mHandler.removeCallbacks(mTimeoutRunnable);
+			mHandler = null;
 		}
+
+		Calendar cal = Calendar.getInstance();
+		ContentValues cv = new ContentValues();
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_NB_CUPS, mNbCups);
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_WEIGHT, mWeight);
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_DATETIME, cal.getTimeInMillis()/1000);
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_USER_ID, mUserId);
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_SUCCESS, mIsSuccess);
+
+		getContentResolver().insert(StroppyKettleContract.Interactions.CONTENT_URI, cv);
+	}
+	private void resetAndRelaunch() {
+
 	}
 
 	@Override
 	protected void receivedNewWeight(float weight) {
-
+		finish();
 	}
 
 	private void revOver() {
+		mIsSuccess = true;
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
 		builder.setMessage("You can now enjoy your tea.").setTitle("Congratulations!");
@@ -131,7 +169,7 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 		builder.setPositiveButton(android.R.string.ok,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						Intent i = new Intent(GameStroppyActivity.this, LoginStroppyActivity.class);
+						Intent i = new Intent(GameStroppyActivity.this, BoilingStroppyActivity.class);
 						startActivity(i);
 						GameStroppyActivity.this.finish();
 					}
@@ -141,6 +179,31 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 		dialog.show();
 	}
 
+	private void timeIsOut() {
+		sendPowerMessage(false);
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+		builder.setMessage("Would you like to try again?").setTitle("You fail...");
+
+		builder.setPositiveButton(android.R.string.ok,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						// TODO Do it again...
+					}
+				});
+		builder.setNegativeButton(android.R.string.cancel,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						GameStroppyActivity.this.finish();
+					}
+				});
+
+		AlertDialog dialog = builder.create();
+		dialog.show();
+	}
+
+	// ********* Wheel Section ********** //
 
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
@@ -159,16 +222,18 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 			float rotation = (float) (mStartAngle - currentAngle);
 
 			if (rotation > 0f && rotation < TRESHOLD) {
-				if (mTimer != null) {
-					mTimer.cancel();
-					mTimer.purge();
-					mTimer = null;
+				if(mHandler != null) {
+					mHandler.removeCallbacks(mDecrementRunnable);
 				}
 
 				rotate(rotation);
 				mRotCounter += rotation;
 
 				if (mRotCounter > 360f) {
+					// Stop the initial timeout if there is at least a full spin.
+					if(mHandler != null) {
+						mHandler.removeCallbacks(mTimeoutRunnable);
+					}
 					mRevCounter++;
 					mRotCounter = 0;
 					mProgress.setProgress(mRevCounter);
@@ -178,12 +243,12 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 				}
 
 				if (mRevCounter < NB_REVOLUTION) {
-					mTimer = new Timer();
-					mTimer.scheduleAtFixedRate(new mTask(), SEC_GO_DOWN, SEC_GO_DOWN);
+					if(mHandler != null) {
+						mHandler.postDelayed(mDecrementRunnable, SEC_GO_DOWN);
+					}
 				}
 			}
 			mStartAngle = currentAngle;
-
 		}
 		return true;
 	}
@@ -240,5 +305,9 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 			mMatrix.postTranslate(translateX, translateY);
 			mWheelView.setImageMatrix(mMatrix);
 		}
+	}
+
+	@Override
+	public void onBackPressed() {
 	}
 }

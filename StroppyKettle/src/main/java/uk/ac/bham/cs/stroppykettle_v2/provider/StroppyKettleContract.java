@@ -10,9 +10,16 @@ public class StroppyKettleContract {
 	private static final Uri BASE_CONTENT_URI = Uri.parse("content://"
 			+ CONTENT_AUTHORITY);
 
+	public static final String PATH_SCALE = "scale";
 	public static final String PATH_LOGS = "logs";
 	public static final String PATH_USERS = "users";
 	public static final String PATH_INTERACTIONS = "interactions";
+
+	interface ScaleColumns {
+		String SCALE_ID = BaseColumns._ID;
+		String SCALE_NB_CUPS = "datetime";
+		String SCALE_WEIGHT = "prev_weight";
+	}
 
 	interface LogsColumns {
 		String LOG_ID = BaseColumns._ID;
@@ -32,7 +39,21 @@ public class StroppyKettleContract {
 		String INTERACTION_CONDITION = "condition";
 		String INTERACTION_NB_CUPS = "nb_cups";
 		String INTERACTION_WEIGHT = "weight";
+		String INTERACTION_SUCCESS = "success";
 		String INTERACTION_USER_ID = "user_id";
+	}
+
+	public static class Scale implements ScaleColumns, BaseColumns {
+		public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+				.appendPath(PATH_SCALE).build();
+
+		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.android.stroppykettle.scale";
+		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.android.stroppykettle.scale";
+
+		// Get One Weight.
+		public static Uri buildScaleUri(String scaleId) {
+			return CONTENT_URI.buildUpon().appendPath(scaleId).build();
+		}
 	}
 
 	public static class Logs implements LogsColumns, BaseColumns {

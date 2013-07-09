@@ -36,6 +36,10 @@
                 android:launchMode="singleTop"
                 android:screenOrientation="portrait"/>
         <activity
+                android:name=".ui.activities.BoilingStroppyActivity"
+                android:launchMode="singleTop"
+                android:screenOrientation="portrait"/>
+        <activity
                 android:name=".ui.activities.LoginStroppyActivity"
                 android:clearTaskOnLaunch="true"
                 android:label="@string/app_name"

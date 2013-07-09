@@ -9,6 +9,7 @@ import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
 import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract.InteractionsColumns;
 import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract.LogsColumns;
 import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract.UsersColumns;
+import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract.ScaleColumns;
 
 public class StroppyKettleDatabase extends SQLiteOpenHelper {
 
@@ -19,6 +20,7 @@ public class StroppyKettleDatabase extends SQLiteOpenHelper {
 	private static final int DATABASE_VERSION = 1;
 
 	interface Tables {
+		String SCALE = "scale";
 		String LOGS = "logs";
 		String USERS = "users";
 		String INTERACTIONS = "interactions";
@@ -34,6 +36,11 @@ public class StroppyKettleDatabase extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
+		db.execSQL("CREATE TABLE " + Tables.SCALE + " ("
+				+ ScaleColumns.SCALE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ ScaleColumns.SCALE_NB_CUPS + " INT UNIQUE,"
+				+ ScaleColumns.SCALE_WEIGHT + " REAL)");
+
 		db.execSQL("CREATE TABLE " + Tables.LOGS + " ("
 				+ LogsColumns.LOG_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ LogsColumns.LOG_DATETIME + " LONG,"
@@ -50,6 +57,7 @@ public class StroppyKettleDatabase extends SQLiteOpenHelper {
 				+ InteractionsColumns.INTERACTION_CONDITION + " INTEGER,"
 				+ InteractionsColumns.INTERACTION_NB_CUPS + " INTEGER,"
 				+ InteractionsColumns.INTERACTION_WEIGHT + " REAL,"
+				+ InteractionsColumns.INTERACTION_SUCCESS + " INTEGER,"
 				+ InteractionsColumns.INTERACTION_USER_ID + " INTEGER " + References.USER_ID + ")");
 	}
 
@@ -60,6 +68,7 @@ public class StroppyKettleDatabase extends SQLiteOpenHelper {
 					"Upgrading database from version " + oldVersion
 							+ " to " + newVersion
 							+ ", which will destroy all old data");
+		db.execSQL("DROP TABLE IF EXISTS " + Tables.SCALE);
 		db.execSQL("DROP TABLE IF EXISTS " + Tables.LOGS);
 		db.execSQL("DROP TABLE IF EXISTS " + Tables.USERS);
 		db.execSQL("DROP TABLE IF EXISTS " + Tables.INTERACTIONS);

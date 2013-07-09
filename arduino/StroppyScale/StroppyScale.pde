@@ -5,7 +5,7 @@
 #define TX_PIN      10
 
 //weight change edge detector arrays
-#define SAMPLE_SIZE 120
+#define SAMPLE_SIZE 200
 
 // Print average on serial every x DELAY.
 #define PRINT_TIMEOUT 100
@@ -50,20 +50,17 @@ void setup()
 
 void loop()
 {
-
     meetAndroid.receive();
 
     int weight = analogRead(SCALE_PIN);
     float avg = rollingAverage(sampleArray, SAMPLE_SIZE, weight);
 
-
     if(counter++ > PRINT_TIMEOUT) {
         counter = 0;
 
-        //meetAndroid.send(avg);
-
+        //Serial.println(avg);
+        
         previousAvg[indexPrevAvg] = avg;
-
 
         float min = 32767;
         float max = 0;
@@ -92,8 +89,6 @@ void loop()
         }
 
         indexPrevAvg = ++indexPrevAvg % NB_PREV_AVG;
-        
-        //Serial.println(avg);
     }
 }
 

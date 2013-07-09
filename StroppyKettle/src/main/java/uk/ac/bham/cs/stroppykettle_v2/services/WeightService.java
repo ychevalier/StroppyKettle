@@ -36,8 +36,8 @@ public class WeightService extends Service implements AmarinoListener {
 	// Send alive test message every 3 seconds.
 	private static final int TIMEOUT = 3 * 1000;
 
-	//public final int[] mWeightTab = {215, 252, 288, 331, 375, 413, 460};
-	//public final float ERROR = 0.2f;
+	//public final float[] mWeightTab = {0, 212.2f, 250, 280, 320, 370, 405, 450};
+	//public final float ERROR = 0.1f;
 
 	// This is the object that receives interactions from clients. See
 	// RemoteService for a more complete example.
@@ -76,7 +76,7 @@ public class WeightService extends Service implements AmarinoListener {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		interactWithArduino(MSG_DISCONNECT, 0);
+		stopAliveTask();
 		AmarinoHelper.unregisterListener(this, this);
 	}
 
@@ -118,7 +118,7 @@ public class WeightService extends Service implements AmarinoListener {
 
 	private float getNbCups(float weight) {
 
-        /*
+		/*
 		int lowBound = -1;
         int upBound = -1;
 
@@ -131,10 +131,10 @@ public class WeightService extends Service implements AmarinoListener {
         }
 
         if(lowBound != -1 && upBound != -1) {
-            float measure = (float)(weight - mWeightTab[lowBound]) / (float)(mWeightTab[upBound] - mWeightTab[lowBound]);
+            float measure = (weight - mWeightTab[lowBound]) / (float)(mWeightTab[upBound] - mWeightTab[lowBound]);
 
             if(DEBUG_MODE) {
-                Log.d(TAG, "Weight : " + weight +  ", Low : " + lowBound + ", Up : " + upBound + ", Measure : " + measure);
+                Log.d(TAG, "Weight : " + weight + ", Low : " + lowBound + ", Up : " + upBound + ", Measure : " + measure);
             }
 
             if(measure < ERROR) {
@@ -151,7 +151,7 @@ public class WeightService extends Service implements AmarinoListener {
         } else {
             return -1;
         }
-        */
+		*/
 		return weight;
 	}
 
@@ -219,8 +219,8 @@ public class WeightService extends Service implements AmarinoListener {
 				cr.insert(StroppyKettleContract.Logs.CONTENT_URI, cv);
 			}
 
-			mLastWeight = weight;
-			broadcastWeight(weight);
+			mLastWeight = getNbCups(weight);
+			broadcastWeight(mLastWeight);
 		} catch (NumberFormatException e) {
 			if (DEBUG_MODE) {
 				e.printStackTrace();

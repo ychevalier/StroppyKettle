@@ -1,5 +1,6 @@
 package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -39,6 +40,9 @@ public abstract class GenericActivity extends FragmentActivity {
 	 */
 	protected boolean mBound;
 
+	protected boolean mIsRefreshing;
+	private ProgressDialog mProgressDialog;
+
 	private ServiceConnection mConnection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			mService = new Messenger(service);
@@ -62,6 +66,7 @@ public abstract class GenericActivity extends FragmentActivity {
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 		mWeightReceiver = new WeightReceiver();
+		mIsRefreshing = false;
 	}
 
 	@Override
@@ -93,6 +98,16 @@ public abstract class GenericActivity extends FragmentActivity {
 			unbindService(mConnection);
 			mBound = false;
 		}
+	}
+
+	protected void setRefreshing(boolean enable) {
+		if(enable && !mIsRefreshing) {
+			mProgressDialog = ProgressDialog.show(this, "",
+				"Loading...", true);
+		} else if(!enable && mIsRefreshing){
+			mProgressDialog.dismiss();
+		}
+		mIsRefreshing = enable;
 	}
 
 	protected void sendPowerMessage(boolean onoff) {

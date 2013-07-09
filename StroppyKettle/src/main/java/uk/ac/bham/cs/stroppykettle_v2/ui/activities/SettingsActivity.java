@@ -1,11 +1,13 @@
 package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -14,6 +16,7 @@ import java.util.List;
 
 import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
+import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract;
 import uk.ac.bham.cs.stroppykettle_v2.ui.adapters.SettingsPagerAdapter;
 import uk.ac.bham.cs.stroppykettle_v2.ui.fragments.SettingsFragment;
 import uk.ac.bham.cs.stroppykettle_v2.ui.views.CustomViewPager;
@@ -26,6 +29,7 @@ public class SettingsActivity extends GenericActivity implements
 
 	private int mCurrentPosition;
 	private CustomViewPager mPager;
+	private boolean mDoNotUpdateOnCancel;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -45,11 +49,39 @@ public class SettingsActivity extends GenericActivity implements
 
 		mPager.setCurrentItem(0);
 		mCurrentPosition = mPager.getCurrentItem();
+		mDoNotUpdateOnCancel = false;
 	}
 
 	@Override
 	protected void receivedNewWeight(float weight) {
+		if(mIsRefreshing) {
 
+
+			if(DEBUG_MODE) {
+				Log.d(TAG, "And I received a new weight : " + weight +  " for " + (mCurrentPosition-2) + " cups.");
+			}
+
+			// We are using position -2 because it starts at -1 and
+			// we are at the next position that the one we want to update.
+			ContentValues cv = new ContentValues();
+			cv.put(StroppyKettleContract.Scale.SCALE_NB_CUPS, mCurrentPosition - 2);
+			cv.put(StroppyKettleContract.Scale.SCALE_WEIGHT, weight);
+			getContentResolver().insert(StroppyKettleContract.Scale.CONTENT_URI, cv);
+
+			setRefreshing(false);
+
+			// Position start from 0, and there is nbCups + 3 fragments.
+			// (nothing, empty and done).
+			if (mCurrentPosition == StroppyKettleApplication.NUMBER_OF_CUPS + 2) {
+				mPager.setPagingEnabled(false);
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					public void run() {
+						finish();
+					}
+				}, 1000);
+			}
+		}
 	}
 
 	private List<Fragment> getFragments() {
@@ -59,15 +91,6 @@ public class SettingsActivity extends GenericActivity implements
 			fList.add(SettingsFragment.newInstance(i));
 		}
 		return fList;
-	}
-
-	@Override
-	public void onPageScrollStateChanged(int state) {
-	}
-
-	@Override
-	public void onPageScrolled(int position, float positionOffset,
-							   int positionOffsetPixels) {
 	}
 
 	@Override
@@ -86,6 +109,9 @@ public class SettingsActivity extends GenericActivity implements
 			builder.setNegativeButton(android.R.string.cancel,
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
+							// If we are going to the same page again,
+							// we dont want to update.
+							mDoNotUpdateOnCancel = true;
 							mPager.setCurrentItem(mCurrentPosition);
 						}
 					});
@@ -95,18 +121,20 @@ public class SettingsActivity extends GenericActivity implements
 
 		} else {
 			mCurrentPosition = position;
-
-			// Position start from 0, and there is nbCups + 3 fragments.
-			// (nothing, empty and done).
-			if (position == StroppyKettleApplication.NUMBER_OF_CUPS + 2) {
-				mPager.setPagingEnabled(false);
-				Handler handler = new Handler();
-				handler.postDelayed(new Runnable() {
-					public void run() {
-						finish();
-					}
-				}, 1000);
+			if(!mDoNotUpdateOnCancel) {
+				setRefreshing(true);
+				getCurrentWeight();
 			}
+			mDoNotUpdateOnCancel = false;
 		}
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int state) {
+	}
+
+	@Override
+	public void onPageScrolled(int position, float positionOffset,
+							   int positionOffsetPixels) {
 	}
 }

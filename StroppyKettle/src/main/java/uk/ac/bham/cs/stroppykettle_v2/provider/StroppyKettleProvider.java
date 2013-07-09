@@ -5,6 +5,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
@@ -12,6 +13,7 @@ import android.net.Uri;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
 import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract.Interactions;
 import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract.Logs;
+import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract.Scale;
 import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract.Users;
 import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleDatabase.Tables;
 
@@ -31,6 +33,9 @@ public class StroppyKettleProvider extends ContentProvider {
 	private static final int INTERACTIONS = 30;
 	private static final int INTERACTIONS_ID = 31;
 
+	private static final int SCALE = 40;
+	private static final int SCALE_ID = 41;
+
 	static final String UNDERSCORE = "_";
 	static final String SLASH = "/";
 	static final String STAR = "*";
@@ -43,6 +48,10 @@ public class StroppyKettleProvider extends ContentProvider {
 	private static UriMatcher buildUriMatcher() {
 		final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 		final String authority = StroppyKettleContract.CONTENT_AUTHORITY;
+
+		matcher.addURI(authority, StroppyKettleContract.PATH_SCALE, SCALE);
+		matcher.addURI(authority, StroppyKettleContract.PATH_SCALE + SLASH
+				+ STAR, SCALE_ID);
 
 		matcher.addURI(authority, StroppyKettleContract.PATH_LOGS, LOGS);
 		matcher.addURI(authority, StroppyKettleContract.PATH_LOGS + SLASH
@@ -67,6 +76,10 @@ public class StroppyKettleProvider extends ContentProvider {
 	public String getType(Uri uri) {
 		final int match = sUriMatcher.match(uri);
 		switch (match) {
+			case SCALE:
+				return StroppyKettleContract.Scale.CONTENT_TYPE;
+			case SCALE_ID:
+				return StroppyKettleContract.Scale.CONTENT_ITEM_TYPE;
 			case LOGS:
 				return StroppyKettleContract.Logs.CONTENT_TYPE;
 			case LOGS_ID:
@@ -101,6 +114,16 @@ public class StroppyKettleProvider extends ContentProvider {
 		long id = -1;
 
 		switch (match) {
+			case SCALE:
+			case SCALE_ID:
+				// Insert if not in db, otherwise update nbCups.
+				try {
+					id = db.insertOrThrow(Tables.SCALE, null, values);
+				} catch (SQLiteConstraintException e) {
+					db.update(Tables.SCALE, values, Scale.SCALE_NB_CUPS + "=" + values.get(Scale.SCALE_NB_CUPS), null);
+				}
+				getContext().getContentResolver().notifyChange(uri, null);
+				return ContentUris.withAppendedId(uri, id);
 			case LOGS:
 			case LOGS_ID:
 				id = db.insertOrThrow(Tables.LOGS, null, values);
@@ -132,6 +155,15 @@ public class StroppyKettleProvider extends ContentProvider {
 		final int match = sUriMatcher.match(uri);
 
 		switch (match) {
+			case SCALE:
+			case SCALE_ID:
+				try {
+					return db.update(Tables.SCALE, values,
+							Scale.SCALE_ID + "=" + id, null);
+				} catch (Exception e) {
+					return db.update(Tables.SCALE, values, selection,
+							selectionArgs);
+				}
 			case LOGS:
 			case LOGS_ID:
 				try {
@@ -173,6 +205,13 @@ public class StroppyKettleProvider extends ContentProvider {
 		final int match = sUriMatcher.match(uri);
 
 		switch (match) {
+			case SCALE:
+			case SCALE_ID:
+				try {
+					return db.delete(Tables.SCALE, Scale.SCALE_ID + "=" + id, null);
+				} catch (Exception e) {
+					return db.delete(Tables.SCALE, selection, selectionArgs);
+				}
 			case LOGS:
 			case LOGS_ID:
 				try {
@@ -211,6 +250,14 @@ public class StroppyKettleProvider extends ContentProvider {
 
 		int uriType = sUriMatcher.match(uri);
 		switch (uriType) {
+			case SCALE_ID:
+				queryBuilder.setTables(Tables.SCALE);
+				queryBuilder.appendWhere(Scale.SCALE_ID + "="
+						+ uri.getLastPathSegment());
+				break;
+			case SCALE:
+				queryBuilder.setTables(Tables.SCALE);
+				break;
 			case LOGS_ID:
 				queryBuilder.setTables(Tables.LOGS);
 				queryBuilder.appendWhere(Logs.LOG_ID + "="
