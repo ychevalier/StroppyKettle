@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
@@ -39,6 +38,7 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 
 	public static final String EXTRA_USER_ID = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.CupsStroppyActivity.EXTRA_USER_ID";
 	public static final String EXTRA_USER_NAME = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.CupsStroppyActivity.EXTRA_USER_NAME";
+	public static final String EXTRA_START_TIME = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.CupsStroppyActivity.EXTRA_START_TIME";
 
 	private ViewPager mPager;
 	private int mNbCups;
@@ -50,6 +50,8 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 	private Map<Integer, Float> mCupWeightRef;
 
 	private boolean mIsWaitingForWeight;
+
+	private long mStartTime;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +89,7 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 		if (getIntent() != null) {
 			name = getIntent().getStringExtra(EXTRA_USER_NAME);
 			mUserId = getIntent().getLongExtra(EXTRA_USER_ID, -1);
+			mStartTime = getIntent().getLongExtra(EXTRA_START_TIME, -1);
 		}
 		if (name == null) {
 			name = "";
@@ -110,16 +113,25 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 			setRefreshing(false);
 			sendPowerMessage(true);
 
-			// TODO Compute if we need stroppyness & discrepency.
-			Random random = new Random();
+			int nbSpins = (mCondition == StroppyKettleApplication.CONDITION_STROPPY? StroppyKettleApplication.computeNbSpins(weight, mCupWeightRef.get(Integer.valueOf(mNbCups)) == null? 0 : mCupWeightRef.get(Integer.valueOf(mNbCups)), mStroppiness) : 0);
 
-			Intent i = new Intent(this, GameStroppyActivity.class);
-			i.putExtra(GameStroppyActivity.EXTRA_USER_ID, mUserId);
-			i.putExtra(GameStroppyActivity.EXTRA_DISCREPANCY, random.nextInt(100));
-			i.putExtra(GameStroppyActivity.EXTRA_NB_CUPS, mNbCups);
-			i.putExtra(GameStroppyActivity.EXTRA_WEIGHT, weight);
+			if(DEBUG_MODE) {
+				Log.d(TAG, "Condition : " + mCondition + " - Spins " + nbSpins + " - Weight : " + weight + " - Expected Weight : " + mCupWeightRef.get(Integer.valueOf(mNbCups)));
+			}
+
+			Intent i;
+			if(nbSpins == 0) {
+				interactionLog(mUserId, mCondition, mStartTime, -1, weight, mNbCups, false, true, mStroppiness, nbSpins);
+				i = new Intent(this, BoilingStroppyActivity.class);
+			} else {
+				i = new Intent(this, GameStroppyActivity.class);
+				i.putExtra(GameStroppyActivity.EXTRA_USER_ID, mUserId);
+				i.putExtra(GameStroppyActivity.EXTRA_NB_SPINS, nbSpins);
+				i.putExtra(GameStroppyActivity.EXTRA_NB_CUPS, mNbCups);
+				i.putExtra(GameStroppyActivity.EXTRA_WEIGHT, weight);
+				i.putExtra(GameStroppyActivity.EXTRA_START_TIME, mStartTime);
+			}
 			startActivity(i);
-
 			finish();
 		}
 	}
@@ -163,28 +175,6 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 	}
 
 	@Override
-	public void onPageScrollStateChanged(int state) {
-	}
-
-	@Override
-	public void onPageScrolled(int position, float positionOffset,
-							   int positionOffsetPixels) {
-	}
-
-	@Override
-	public void onPageSelected(int position) {
-		if (position == 0) {
-			mPager.setCurrentItem(1);
-			mNbCups = 1;
-		} else if (position == StroppyKettleApplication.NUMBER_OF_CUPS + 1) {
-			mPager.setCurrentItem(StroppyKettleApplication.NUMBER_OF_CUPS);
-			mNbCups = StroppyKettleApplication.NUMBER_OF_CUPS;
-		} else {
-			mNbCups = position;
-		}
-	}
-
-	@Override
 	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 		String[] projection = {StroppyKettleContract.Scale.SCALE_ID, StroppyKettleContract.Scale.SCALE_NB_CUPS, StroppyKettleContract.Scale.SCALE_WEIGHT};
 
@@ -215,5 +205,27 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 	@Override
 	public void onLoaderReset(Loader<Cursor> cursorLoader) {
 
+	}
+
+	@Override
+	public void onPageSelected(int position) {
+		if (position == 0) {
+			mPager.setCurrentItem(1);
+			mNbCups = 1;
+		} else if (position == StroppyKettleApplication.NUMBER_OF_CUPS + 1) {
+			mPager.setCurrentItem(StroppyKettleApplication.NUMBER_OF_CUPS);
+			mNbCups = StroppyKettleApplication.NUMBER_OF_CUPS;
+		} else {
+			mNbCups = position;
+		}
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int state) {
+	}
+
+	@Override
+	public void onPageScrolled(int position, float positionOffset,
+							   int positionOffsetPixels) {
 	}
 }

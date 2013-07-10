@@ -28,9 +28,10 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
 	private static final String TAG = GameStroppyActivity.class.getSimpleName();
 
-	public static final String EXTRA_DISCREPANCY = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_DISCREPENCY";
+	public static final String EXTRA_NB_SPINS = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_NB_SPINS";
 	public static final String EXTRA_WEIGHT = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_WEIGHT";
 	public static final String EXTRA_NB_CUPS = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_NB_CUPS";
+	public static final String EXTRA_START_TIME = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_START_TIME";
 	public static final String EXTRA_USER_ID = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_USER_ID";
 
 	private static final int TIMEOUT = 10000;
@@ -49,7 +50,7 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 				mProgress.setProgress(--mRevCounter);
 
 				// If we are here, then the progress is down.
-				if(mRevCounter == 0) {
+				if (mRevCounter == 0) {
 					timeIsOut();
 				} else {
 					mHandler.postDelayed(mDecrementRunnable, SEC_GO_DOWN);
@@ -59,7 +60,6 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 	};
 
 	private static final int TRESHOLD = 40;
-	private static int NB_REVOLUTION = 20;
 
 	private static final int SEC_GO_DOWN = 1000;
 
@@ -68,6 +68,8 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 	private long mUserId;
 	private float mWeight;
 	private int mNbCups;
+	private long mStartTime;
+	private int mNbSpins;
 
 	private ImageView mWheelView;
 	private ProgressBar mProgress;
@@ -104,8 +106,6 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 		mMatrix = new Matrix();
 		mWheelView.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
-		mIsSuccess = false;
-
 		mHandler = new Handler();
 	}
 
@@ -117,42 +117,63 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 		if (getIntent() != null) {
 			mNbCups = getIntent().getIntExtra(EXTRA_NB_CUPS, 0);
 			mUserId = getIntent().getLongExtra(EXTRA_USER_ID, 0);
-			discrepancy = getIntent().getIntExtra(EXTRA_DISCREPANCY, 0);
 			mWeight = getIntent().getFloatExtra(EXTRA_WEIGHT, 0);
+			mStartTime = getIntent().getLongExtra(EXTRA_START_TIME, 0);
+			mNbSpins = getIntent().getIntExtra(EXTRA_NB_SPINS, 0);
 		}
 
-		NB_REVOLUTION += (discrepancy * NB_REVOLUTION) / 100;
-		mProgress.setMax(NB_REVOLUTION);
+		mProgress.setMax(mNbSpins);
 
-		mRevCounter = 0;
-		mRotCounter = 0;
-		mProgress.setProgress(0);
-
-		mHandler.postDelayed(mTimeoutRunnable, TIMEOUT);
+		resetAndRelaunch();
 	}
 
 	@Override
 	protected void onStop() {
-		super.onStop();
-
-		if(mHandler != null) {
-			mHandler.removeCallbacks(mDecrementRunnable);
-			mHandler.removeCallbacks(mTimeoutRunnable);
-			mHandler = null;
+		// Just in case...
+		if (!mIsSuccess) {
+			sendPowerMessage(false);
 		}
 
+		super.onStop();
+
+		if (mHandler != null) {
+			mHandler.removeCallbacks(mDecrementRunnable);
+			mHandler.removeCallbacks(mTimeoutRunnable);
+		}
+
+		logInteraction();
+	}
+
+	private void resetAndRelaunch() {
+		mRevCounter = 0;
+		mRotCounter = 0;
+		mProgress.setProgress(0);
+
+		mIsSuccess = false;
+
+		if (mHandler != null) {
+			mHandler.removeCallbacks(mDecrementRunnable);
+			mHandler.removeCallbacks(mTimeoutRunnable);
+		}
+
+		sendPowerMessage(true);
+
+		mHandler.postDelayed(mTimeoutRunnable, TIMEOUT);
+	}
+
+	private void logInteraction() {
 		Calendar cal = Calendar.getInstance();
 		ContentValues cv = new ContentValues();
 		cv.put(StroppyKettleContract.Interactions.INTERACTION_NB_CUPS, mNbCups);
 		cv.put(StroppyKettleContract.Interactions.INTERACTION_WEIGHT, mWeight);
-		cv.put(StroppyKettleContract.Interactions.INTERACTION_DATETIME, cal.getTimeInMillis()/1000);
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_START_DATETIME, mStartTime);
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_STOP_DATETIME, cal.getTimeInMillis() / 1000);
 		cv.put(StroppyKettleContract.Interactions.INTERACTION_USER_ID, mUserId);
-		cv.put(StroppyKettleContract.Interactions.INTERACTION_SUCCESS, mIsSuccess);
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_IS_SUCCESS, mIsSuccess);
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_IS_STROPPY, 1);
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_CONDITION, 0); // TODO
 
 		getContentResolver().insert(StroppyKettleContract.Interactions.CONTENT_URI, cv);
-	}
-	private void resetAndRelaunch() {
-
 	}
 
 	@Override
@@ -180,6 +201,7 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 	}
 
 	private void timeIsOut() {
+		// The user has failed.
 		sendPowerMessage(false);
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -189,7 +211,8 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 		builder.setPositiveButton(android.R.string.ok,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						// TODO Do it again...
+						//logInteraction();
+						resetAndRelaunch();
 					}
 				});
 		builder.setNegativeButton(android.R.string.cancel,
@@ -222,7 +245,7 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 			float rotation = (float) (mStartAngle - currentAngle);
 
 			if (rotation > 0f && rotation < TRESHOLD) {
-				if(mHandler != null) {
+				if (mHandler != null) {
 					mHandler.removeCallbacks(mDecrementRunnable);
 				}
 
@@ -231,19 +254,19 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 
 				if (mRotCounter > 360f) {
 					// Stop the initial timeout if there is at least a full spin.
-					if(mHandler != null) {
+					if (mHandler != null) {
 						mHandler.removeCallbacks(mTimeoutRunnable);
 					}
 					mRevCounter++;
 					mRotCounter = 0;
 					mProgress.setProgress(mRevCounter);
-					if (mRevCounter >= NB_REVOLUTION) {
+					if (mRevCounter >= mNbSpins) {
 						revOver();
 					}
 				}
 
-				if (mRevCounter < NB_REVOLUTION) {
-					if(mHandler != null) {
+				if (mRevCounter < mNbSpins) {
+					if (mHandler != null) {
 						mHandler.postDelayed(mDecrementRunnable, SEC_GO_DOWN);
 					}
 				}

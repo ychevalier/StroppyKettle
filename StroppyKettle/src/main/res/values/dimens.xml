@@ -21,6 +21,8 @@
     <dimen name="settings_indicator_margin">18dp</dimen>
     <dimen name="settings_frame_text_margin">18dp</dimen>
     <dimen name="indicator_size">8dp</dimen>
+    <dimen name="weight_indicator_width">68dp</dimen>
+    <dimen name="weight_indicator_height">32dp</dimen>
     
     <!-- Main Activity -->
     <dimen name="stroppy_button_size">200dp</dimen>

@@ -53,11 +53,15 @@ public class StroppyKettleDatabase extends SQLiteOpenHelper {
 
 		db.execSQL("CREATE TABLE " + Tables.INTERACTIONS + " ("
 				+ InteractionsColumns.INTERACTION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-				+ InteractionsColumns.INTERACTION_DATETIME + " LONG,"
+				+ InteractionsColumns.INTERACTION_START_DATETIME + " LONG,"
+				+ InteractionsColumns.INTERACTION_STOP_DATETIME + " LONG,"
 				+ InteractionsColumns.INTERACTION_CONDITION + " INTEGER,"
 				+ InteractionsColumns.INTERACTION_NB_CUPS + " INTEGER,"
+				+ InteractionsColumns.INTERACTION_NB_SPINS + " INTEGER,"
+				+ InteractionsColumns.INTERACTION_STROPPINESS + " INTEGER,"
 				+ InteractionsColumns.INTERACTION_WEIGHT + " REAL,"
-				+ InteractionsColumns.INTERACTION_SUCCESS + " INTEGER,"
+				+ InteractionsColumns.INTERACTION_IS_STROPPY + " INTEGER,"
+				+ InteractionsColumns.INTERACTION_IS_SUCCESS + " INTEGER,"
 				+ InteractionsColumns.INTERACTION_USER_ID + " INTEGER " + References.USER_ID + ")");
 	}
 

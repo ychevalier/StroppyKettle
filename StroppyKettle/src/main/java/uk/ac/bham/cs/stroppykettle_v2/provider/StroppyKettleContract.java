@@ -35,11 +35,15 @@ public class StroppyKettleContract {
 
 	interface InteractionsColumns {
 		String INTERACTION_ID = BaseColumns._ID;
-		String INTERACTION_DATETIME = "datetime";
+		String INTERACTION_START_DATETIME = "start";
+		String INTERACTION_STOP_DATETIME = "stop";
 		String INTERACTION_CONDITION = "condition";
 		String INTERACTION_NB_CUPS = "nb_cups";
 		String INTERACTION_WEIGHT = "weight";
-		String INTERACTION_SUCCESS = "success";
+		String INTERACTION_STROPPINESS = "stroppiness";
+		String INTERACTION_NB_SPINS = "nb_spins";
+		String INTERACTION_IS_STROPPY = "is_stroppy";
+		String INTERACTION_IS_SUCCESS = "is_success";
 		String INTERACTION_USER_ID = "user_id";
 	}
 

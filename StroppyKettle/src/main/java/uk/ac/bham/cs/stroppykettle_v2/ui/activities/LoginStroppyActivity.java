@@ -24,6 +24,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import java.util.Calendar;
+
 import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
 import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract.Users;
@@ -62,8 +64,6 @@ public class LoginStroppyActivity extends GenericStroppyActivity implements
 	@Override
 	protected void onStart() {
 		super.onStart();
-		// TODO bounding problem.. this does not work.
-		//sendPowerMessage(false);
 		getSupportLoaderManager().restartLoader(0, null, this);
 	}
 
@@ -89,10 +89,19 @@ public class LoginStroppyActivity extends GenericStroppyActivity implements
 		mAdapter.changeCursor(null);
 	}
 
-	private void startCupsActivity(long id, String name) {
-		Intent i = new Intent(this, CupsStroppyActivity.class);
-		i.putExtra(CupsStroppyActivity.EXTRA_USER_NAME, name);
-		i.putExtra(CupsStroppyActivity.EXTRA_USER_ID, id);
+	private void startCupsActivityOrLog(long id, String name) {
+
+		Intent i;
+		if(mCondition == StroppyKettleApplication.CONDITION_LOGIN) {
+			Calendar cal = Calendar.getInstance();
+			interactionLog(id, mCondition, cal.getTimeInMillis() / 1000, -1, -1, -1, false, false, -1, -1);
+			i = new Intent(this, BoilingStroppyActivity.class);
+			sendPowerMessage(true);
+		} else {
+			i = new Intent(this, CupsStroppyActivity.class);
+			i.putExtra(CupsStroppyActivity.EXTRA_USER_NAME, name);
+			i.putExtra(CupsStroppyActivity.EXTRA_USER_ID, id);
+		}
 		startActivity(i);
 	}
 
@@ -100,7 +109,7 @@ public class LoginStroppyActivity extends GenericStroppyActivity implements
 	public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 		String name = (String) ((TextView) v.findViewById(R.id.row_user_name))
 				.getText();
-		startCupsActivity(id, name);
+		startCupsActivityOrLog(id, name);
 	}
 
 	@Override
@@ -128,7 +137,7 @@ public class LoginStroppyActivity extends GenericStroppyActivity implements
 
 					try {
 						long id = Long.parseLong(uri.getLastPathSegment());
-						startCupsActivity(id, name);
+						startCupsActivityOrLog(id, name);
 					} catch (NumberFormatException e) {
 						// Nothing to do here.
 					}

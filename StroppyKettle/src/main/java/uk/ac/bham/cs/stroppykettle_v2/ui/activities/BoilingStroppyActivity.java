@@ -3,6 +3,7 @@ package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 import android.os.Bundle;
 import android.os.Handler;
 
+import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
 
 public class BoilingStroppyActivity extends GenericStroppyActivity  {
@@ -25,13 +26,13 @@ public class BoilingStroppyActivity extends GenericStroppyActivity  {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_boiling_stroppy);
 		mHandler = new Handler();
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		setRefreshing(true);
 		if(mHandler != null) {
 			mHandler.postDelayed(mBoilingRunnable, BOILING_TIME);
 		}
@@ -43,7 +44,6 @@ public class BoilingStroppyActivity extends GenericStroppyActivity  {
 		sendPowerMessage(false);
 
 		super.onStop();
-		setRefreshing(false);
 		if(mHandler != null) {
 			mHandler.removeCallbacks(mBoilingRunnable);
 		}
@@ -52,5 +52,9 @@ public class BoilingStroppyActivity extends GenericStroppyActivity  {
 	@Override
 	protected void receivedNewWeight(float weight) {
 		BoilingStroppyActivity.this.finish();
+	}
+
+	@Override
+	public void onBackPressed() {
 	}
 }

@@ -1,7 +1,9 @@
 package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -10,9 +12,24 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import uk.ac.bham.cs.stroppykettle_v2.R;
+import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
+import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract;
 
 public abstract class GenericStroppyActivity extends GenericActivity implements
 		OnLongClickListener {
+
+	protected int mStroppiness;
+	protected int mCondition;
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+		// Restore preferences
+		SharedPreferences settings = getSharedPreferences(StroppyKettleApplication.PREFS_NAME, 0);
+		mStroppiness = settings.getInt(StroppyKettleApplication.PREF_STROPPINESS, 0);
+		mCondition = settings.getInt(StroppyKettleApplication.PREF_CONDITION, StroppyKettleApplication.CONDITION_LOGIN);
+	}
 
 	@Override
 	public void setContentView(int layoutResID) {
@@ -30,6 +47,28 @@ public abstract class GenericStroppyActivity extends GenericActivity implements
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		contentLayout.addView(layoutInflater.inflate(layoutResID,
 				contentLayout, false));
+	}
+
+	protected void interactionLog(long userId, int condition, long startTime, long stopTime,
+								  float weight, int nbCups, boolean isStroppy, boolean isSuccess,
+								  int stroppiness, int nbSpins) {
+		ContentValues cv = new ContentValues();
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_USER_ID, userId);
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_CONDITION, condition);
+
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_START_DATETIME, startTime);
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_STOP_DATETIME, stopTime);
+
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_WEIGHT, weight);
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_NB_CUPS, nbCups);
+
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_IS_STROPPY, isStroppy? 1 : 0);
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_IS_SUCCESS, isSuccess? 1 : 0);
+
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_STROPPINESS, stroppiness);
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_NB_SPINS, nbSpins);
+
+		getContentResolver().insert(StroppyKettleContract.Interactions.CONTENT_URI, cv);
 	}
 
 	@Override

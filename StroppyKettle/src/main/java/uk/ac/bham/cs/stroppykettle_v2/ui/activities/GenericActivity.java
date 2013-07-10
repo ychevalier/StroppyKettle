@@ -59,8 +59,8 @@ public abstract class GenericActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		//getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-		//		WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -101,9 +101,17 @@ public abstract class GenericActivity extends FragmentActivity {
 	}
 
 	protected void setRefreshing(boolean enable) {
+		setRefreshing("Loading...", enable);
+	}
+
+	protected void setRefreshing(String message) {
+		setRefreshing(message, true);
+	}
+
+	private void setRefreshing(String message, boolean enable) {
 		if(enable && !mIsRefreshing) {
 			mProgressDialog = ProgressDialog.show(this, "",
-				"Loading...", true);
+				message, true);
 		} else if(!enable && mIsRefreshing){
 			mProgressDialog.dismiss();
 		}
