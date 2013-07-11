@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -11,8 +12,6 @@ import android.os.Messenger;
 
 import java.util.Calendar;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import at.abraxas.amarino.AmarinoHelper;
 import at.abraxas.amarino.AmarinoListener;
@@ -33,21 +32,35 @@ public class WeightService extends Service implements AmarinoListener {
 	public static final int MSG_DISCONNECT = 3;
 	public static final int MSG_ALIVE = 4;
 
-	// Send alive test message every 3 seconds.
-	private static final int TIMEOUT = 3 * 1000;
-
-	//public final float[] mWeightTab = {0, 212.2f, 250, 280, 320, 370, 405, 450};
-	//public final float ERROR = 0.1f;
-
 	// This is the object that receives interactions from clients. See
 	// RemoteService for a more complete example.
 	private Messenger mMessenger;
 
 	private AmarinoReceiver mReceiver;
 
-	private Timer mAliveTimer;
-
 	private float mLastWeight;
+
+	private Handler mHandler;
+
+	private boolean mHasAskedDisconnection;
+
+	private String mAddress;
+
+	private int mAliveInterval;
+
+	Runnable mAliveTask = new Runnable() {
+		public void run() {
+			interactWithArduino(MSG_ALIVE);
+			mHandler.postDelayed(mAliveTask, mAliveInterval * 1000);
+		}
+	};
+
+	Runnable mReconnectTask = new Runnable() {
+		@Override
+		public void run() {
+			interactWithArduino(MSG_CONNECT);
+		}
+	};
 
 	@Override
 	public void onCreate() {
@@ -60,6 +73,14 @@ public class WeightService extends Service implements AmarinoListener {
 		AmarinoHelper.registerListener(this, this);
 
 		mLastWeight = 0;
+
+		mHandler = new Handler();
+
+		mHasAskedDisconnection = false;
+
+		SharedPreferences settings = getSharedPreferences(StroppyKettleApplication.PREFS_NAME, 0);
+		mAddress = settings.getString(StroppyKettleApplication.PREF_ADDRESS, StroppyKettleApplication.DEFAULT_ADDRESS);
+		mAliveInterval = settings.getInt(StroppyKettleApplication.PREF_ALIVE_INTERVAL, StroppyKettleApplication.DEFAULT_ALIVE_INTERVAL);
 	}
 
 	@Override
@@ -77,82 +98,33 @@ public class WeightService extends Service implements AmarinoListener {
 	public void onDestroy() {
 		super.onDestroy();
 		stopAliveTask();
+		stopReconnectTask();
 		AmarinoHelper.unregisterListener(this, this);
 	}
 
 	private void startAliveTask() {
 		stopAliveTask();
-		final Handler handler = new Handler();
-		mAliveTimer = new Timer();
-		TimerTask aliveCheck = new TimerTask() {
-			@Override
-			public void run() {
-				handler.post(new Runnable() {
-					public void run() {
-						interactWithArduino(MSG_ALIVE);
-					}
-				});
-			}
-		};
-		mAliveTimer.schedule(aliveCheck, TIMEOUT, TIMEOUT);
+		if(mHandler != null) {
+			mHandler.postDelayed(mAliveTask, mAliveInterval * 1000);
+		}
 	}
 
 	private void stopAliveTask() {
-		if (mAliveTimer != null) {
-			mAliveTimer.cancel();
-			mAliveTimer.purge();
-			mAliveTimer = null;
+		if (mHandler != null) {
+			mHandler.removeCallbacks(mAliveTask);
 		}
 	}
 
 	private void startReconnectTask() {
-		final Handler handler = new Handler();
-		handler.postDelayed(new Runnable() {
-
-			@Override
-			public void run() {
-				interactWithArduino(MSG_CONNECT);
-			}
-		}, TIMEOUT);
+		if(mHandler != null) {
+			mHandler.postDelayed(mReconnectTask, mAliveInterval * 1000);
+		}
 	}
 
-	private float getNbCups(float weight) {
-
-		/*
-		int lowBound = -1;
-        int upBound = -1;
-
-        for(int i = 0; i < mWeightTab.length; i++) {
-            if(weight < mWeightTab[i]) {
-                upBound = i;
-                lowBound = i-1;
-                break;
-            }
-        }
-
-        if(lowBound != -1 && upBound != -1) {
-            float measure = (weight - mWeightTab[lowBound]) / (float)(mWeightTab[upBound] - mWeightTab[lowBound]);
-
-            if(DEBUG_MODE) {
-                Log.d(TAG, "Weight : " + weight + ", Low : " + lowBound + ", Up : " + upBound + ", Measure : " + measure);
-            }
-
-            if(measure < ERROR) {
-                return lowBound;
-            } else if(measure > 1 - ERROR) {
-                return upBound;
-            } else {
-                return lowBound + measure;
-            }
-        // Too much water.
-        } else if(lowBound == -1 && upBound == -1) {
-                return mWeightTab.length - 1;
-        // Not enough 1 cup/empty/nothing
-        } else {
-            return -1;
-        }
-		*/
-		return weight;
+	private void stopReconnectTask() {
+		if(mHandler != null) {
+			mHandler.removeCallbacks(mReconnectTask);
+		}
 	}
 
 	private void broadcastWeight(float weight) {
@@ -169,21 +141,22 @@ public class WeightService extends Service implements AmarinoListener {
 		stopAliveTask();
 		switch (type) {
 			case MSG_TOGGLE_POWER:
-				AmarinoHelper.sendDataToArduino(this, StroppyKettleApplication.DEVICE_ADDRESS,
+				AmarinoHelper.sendDataToArduino(this, mAddress,
 						BluetoothSerial.POWER_EVENT, arg);
 				break;
 			case MSG_GET_CURRENT:
-				AmarinoHelper.sendDataToArduino(this, StroppyKettleApplication.DEVICE_ADDRESS,
+				AmarinoHelper.sendDataToArduino(this,mAddress,
 						BluetoothSerial.WEIGHT_INFO, arg);
 				break;
 			case MSG_CONNECT:
-				AmarinoHelper.connect(this, StroppyKettleApplication.DEVICE_ADDRESS);
+				AmarinoHelper.connect(this, mAddress);
 				break;
 			case MSG_DISCONNECT:
-				AmarinoHelper.disconnect(this, StroppyKettleApplication.DEVICE_ADDRESS);
+				mHasAskedDisconnection = true;
+				AmarinoHelper.disconnect(this, mAddress);
 				break;
 			case MSG_ALIVE:
-				AmarinoHelper.sendDataToArduino(this, StroppyKettleApplication.DEVICE_ADDRESS,
+				AmarinoHelper.sendDataToArduino(this, mAddress,
 						BluetoothSerial.ALIVE, arg);
 				break;
 		}
@@ -198,7 +171,10 @@ public class WeightService extends Service implements AmarinoListener {
 	}
 
 	public void onDisconnectResult(String from) {
-		startReconnectTask();
+		if(!mHasAskedDisconnection) {
+			startReconnectTask();
+		}
+		mHasAskedDisconnection = false;
 	}
 
 	public void onReceiveData(String data, String from) {
@@ -219,7 +195,7 @@ public class WeightService extends Service implements AmarinoListener {
 				cr.insert(StroppyKettleContract.Logs.CONTENT_URI, cv);
 			}
 
-			mLastWeight = getNbCups(weight);
+			mLastWeight = weight;
 			broadcastWeight(mLastWeight);
 		} catch (NumberFormatException e) {
 			if (DEBUG_MODE) {

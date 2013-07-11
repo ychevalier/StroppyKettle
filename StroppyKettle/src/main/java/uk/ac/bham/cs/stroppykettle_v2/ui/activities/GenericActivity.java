@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Message;
@@ -30,18 +31,22 @@ public abstract class GenericActivity extends FragmentActivity {
 
 	private WeightReceiver mWeightReceiver;
 
-	/**
-	 * Messenger for communicating with the service.
-	 */
+	// Messenger for communicating with the service.
 	protected Messenger mService = null;
 
-	/**
-	 * Flag indicating whether we have called bind on the service.
-	 */
+	// Flag indicating whether we have called bind on the service.
 	protected boolean mBound;
 
 	protected boolean mIsRefreshing;
 	private ProgressDialog mProgressDialog;
+
+	protected int mStroppiness;
+	protected int mCondition;
+	protected String mAddress;
+	protected int mPrecision;
+	protected int mMaxCups;
+	protected int mAliveInterval;
+	protected int mDataInterval;
 
 	private ServiceConnection mConnection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder service) {
@@ -67,6 +72,16 @@ public abstract class GenericActivity extends FragmentActivity {
 
 		mWeightReceiver = new WeightReceiver();
 		mIsRefreshing = false;
+
+		// Restore preferences
+		SharedPreferences settings = getSharedPreferences(StroppyKettleApplication.PREFS_NAME, 0);
+		mStroppiness = settings.getInt(StroppyKettleApplication.PREF_STROPPINESS, StroppyKettleApplication.DEFAULT_STROPPINESS);
+		mCondition = settings.getInt(StroppyKettleApplication.PREF_CONDITION, StroppyKettleApplication.DEFAULT_CONDITION);
+		mAddress = settings.getString(StroppyKettleApplication.PREF_ADDRESS, StroppyKettleApplication.DEFAULT_ADDRESS);
+		mPrecision = settings.getInt(StroppyKettleApplication.PREF_PRECISION, StroppyKettleApplication.DEFAULT_PRECISION);
+		mMaxCups = settings.getInt(StroppyKettleApplication.PREF_MAX_CUPS, StroppyKettleApplication.DEFAULT_MAX_CUPS);
+		mAliveInterval = settings.getInt(StroppyKettleApplication.PREF_ALIVE_INTERVAL, StroppyKettleApplication.DEFAULT_ALIVE_INTERVAL);
+		mDataInterval = settings.getInt(StroppyKettleApplication.PREF_DATA_INTERVAL, StroppyKettleApplication.DEFAULT_DATA_INTERVAL);
 	}
 
 	@Override
@@ -101,17 +116,9 @@ public abstract class GenericActivity extends FragmentActivity {
 	}
 
 	protected void setRefreshing(boolean enable) {
-		setRefreshing("Loading...", enable);
-	}
-
-	protected void setRefreshing(String message) {
-		setRefreshing(message, true);
-	}
-
-	private void setRefreshing(String message, boolean enable) {
 		if(enable && !mIsRefreshing) {
 			mProgressDialog = ProgressDialog.show(this, "",
-				message, true);
+				"Loading...", true);
 		} else if(!enable && mIsRefreshing){
 			mProgressDialog.dismiss();
 		}
@@ -155,9 +162,9 @@ public abstract class GenericActivity extends FragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent i = null;
 		switch (item.getItemId()) {
-			case R.id.action_settings:
-				if (!(this instanceof SettingsActivity)) {
-					i = new Intent(this, SettingsActivity.class);
+			case R.id.action_calibration:
+				if (!(this instanceof CalibrationActivity)) {
+					i = new Intent(this, CalibrationActivity.class);
 				}
 				break;
 			case R.id.action_monitor:

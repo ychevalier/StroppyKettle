@@ -25,7 +25,7 @@
                 android:name=".ui.activities.MonitorActivity"
                 android:screenOrientation="portrait"/>
         <activity
-                android:name=".ui.activities.SettingsActivity"
+                android:name=".ui.activities.CalibrationActivity"
                 android:screenOrientation="portrait"/>
         <activity
                 android:name=".ui.activities.GameStroppyActivity"

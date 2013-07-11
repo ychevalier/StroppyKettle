@@ -3,6 +3,8 @@
 
     <string name="service_name">WeightService</string>
     <string name="app_name">StroppyKettle</string>
+    <String name="admin_mode">Admin Panel</String>
+    <string name="action_calibration">Calibration</string>
     <string name="action_settings">Settings</string>
     <string name="action_monitor">Monitor</string>
 

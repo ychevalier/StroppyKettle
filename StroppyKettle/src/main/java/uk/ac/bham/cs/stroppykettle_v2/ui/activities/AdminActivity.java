@@ -15,7 +15,6 @@ public class AdminActivity extends GenericActivity implements OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.activity_admin);
 
 		mStroppyButton = (Button) findViewById(R.id.stroppy_button);

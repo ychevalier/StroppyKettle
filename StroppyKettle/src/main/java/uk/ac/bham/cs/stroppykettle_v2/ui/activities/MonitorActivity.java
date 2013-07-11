@@ -23,6 +23,9 @@ public class MonitorActivity extends GenericActivity implements OnClickListener 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		setTitle(getString(R.string.action_monitor));
+
 		setContentView(R.layout.activity_monitor);
 
 		mScroll = (ScrollView) findViewById(R.id.scroll_monitor);

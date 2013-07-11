@@ -19,14 +19,14 @@ import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
 import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract;
 import uk.ac.bham.cs.stroppykettle_v2.ui.adapters.SettingsPagerAdapter;
-import uk.ac.bham.cs.stroppykettle_v2.ui.fragments.SettingsFragment;
+import uk.ac.bham.cs.stroppykettle_v2.ui.fragments.CalibrationFragment;
 import uk.ac.bham.cs.stroppykettle_v2.ui.views.CustomViewPager;
 
-public class SettingsActivity extends GenericActivity implements
+public class CalibrationActivity extends GenericActivity implements
 		OnPageChangeListener, View.OnClickListener {
 
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
-	private static final String TAG = SettingsActivity.class.getSimpleName();
+	private static final String TAG = CalibrationActivity.class.getSimpleName();
 
 	private int mCurrentPosition;
 	private CustomViewPager mPager;
@@ -37,7 +37,10 @@ public class SettingsActivity extends GenericActivity implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_settings);
+
+		setTitle(getString(R.string.action_calibration));
+
+		setContentView(R.layout.activity_calibration);
 
 		mLastWeight = 0;
 
@@ -79,8 +82,8 @@ public class SettingsActivity extends GenericActivity implements
 	private List<Fragment> getFragments() {
 		List<Fragment> fList = new ArrayList<Fragment>();
 
-		for (int i = -1; i <= StroppyKettleApplication.NUMBER_OF_CUPS + 1; i++) {
-			fList.add(SettingsFragment.newInstance(i));
+		for (int i = -1; i <= mMaxCups + 1; i++) {
+			fList.add(CalibrationFragment.newInstance(i, mMaxCups));
 		}
 		return fList;
 	}
@@ -123,7 +126,7 @@ public class SettingsActivity extends GenericActivity implements
 
 				// Position start from 0, and there is nbCups + 3 fragments.
 				// (nothing, empty and done).
-				if (mCurrentPosition == StroppyKettleApplication.NUMBER_OF_CUPS + 2) {
+				if (mCurrentPosition == mMaxCups + 2) {
 					mPager.setPagingEnabled(false);
 					Handler handler = new Handler();
 					handler.postDelayed(new Runnable() {

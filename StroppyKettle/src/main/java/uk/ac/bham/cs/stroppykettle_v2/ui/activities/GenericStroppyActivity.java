@@ -3,7 +3,6 @@ package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnLongClickListener;
@@ -12,24 +11,10 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import uk.ac.bham.cs.stroppykettle_v2.R;
-import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
 import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract;
 
 public abstract class GenericStroppyActivity extends GenericActivity implements
 		OnLongClickListener {
-
-	protected int mStroppiness;
-	protected int mCondition;
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-
-		// Restore preferences
-		SharedPreferences settings = getSharedPreferences(StroppyKettleApplication.PREFS_NAME, 0);
-		mStroppiness = settings.getInt(StroppyKettleApplication.PREF_STROPPINESS, 0);
-		mCondition = settings.getInt(StroppyKettleApplication.PREF_CONDITION, StroppyKettleApplication.CONDITION_LOGIN);
-	}
 
 	@Override
 	public void setContentView(int layoutResID) {

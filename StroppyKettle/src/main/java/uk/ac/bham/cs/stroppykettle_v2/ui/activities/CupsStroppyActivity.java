@@ -70,9 +70,9 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 		display.getSize(size);
 
 		mPager = (ViewPager) findViewById(R.id.cups_selector);
-		mPager.setPageMargin(-(int) (size.x / 2));
+		mPager.setPageMargin(-(size.x / 2));
 
-		mPager.setOffscreenPageLimit(StroppyKettleApplication.NUMBER_OF_CUPS);
+		mPager.setOffscreenPageLimit(mMaxCups);
 		mPager.setAdapter(pageAdapter);
 
 		mPager.setOnPageChangeListener(this);
@@ -113,10 +113,13 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 			setRefreshing(false);
 			sendPowerMessage(true);
 
-			int nbSpins = (mCondition == StroppyKettleApplication.CONDITION_STROPPY? StroppyKettleApplication.computeNbSpins(weight, mCupWeightRef.get(Integer.valueOf(mNbCups)) == null? 0 : mCupWeightRef.get(Integer.valueOf(mNbCups)), mStroppiness) : 0);
+			int nbSpins = (mCondition == StroppyKettleApplication.CONDITION_STROPPY?
+					StroppyKettleApplication.computeNbSpins(
+							weight, mCupWeightRef.get(mNbCups) == null?
+								0 : mCupWeightRef.get(mNbCups), mStroppiness, mPrecision) : 0);
 
 			if(DEBUG_MODE) {
-				Log.d(TAG, "Condition : " + mCondition + " - Spins " + nbSpins + " - Weight : " + weight + " - Expected Weight : " + mCupWeightRef.get(Integer.valueOf(mNbCups)));
+				Log.d(TAG, "Condition : " + mCondition + " - Spins " + nbSpins + " - Weight : " + weight + " - Expected Weight : " + mCupWeightRef.get(mNbCups));
 			}
 
 			Intent i;
@@ -139,11 +142,11 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 	private List<View> getViews() {
 		List<View> vList = new ArrayList<View>();
 
-		for (int i = 0; i <= StroppyKettleApplication.NUMBER_OF_CUPS + 1; i++) {
+		for (int i = 0; i <= mMaxCups + 1; i++) {
 			if (i == 0) {
 				View v = new HalfScreenView(this);
 				vList.add(v);
-			} else if (i == StroppyKettleApplication.NUMBER_OF_CUPS + 1) {
+			} else if (i == mMaxCups + 1) {
 				View v = new HalfScreenView(this);
 				vList.add(v);
 			} else {
@@ -178,9 +181,8 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 		String[] projection = {StroppyKettleContract.Scale.SCALE_ID, StroppyKettleContract.Scale.SCALE_NB_CUPS, StroppyKettleContract.Scale.SCALE_WEIGHT};
 
-		CursorLoader cursorLoader = new CursorLoader(this, StroppyKettleContract.Scale.CONTENT_URI,
+		return new CursorLoader(this, StroppyKettleContract.Scale.CONTENT_URI,
 				projection, null, null, null);
-		return cursorLoader;
 	}
 
 	@Override
@@ -212,9 +214,9 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 		if (position == 0) {
 			mPager.setCurrentItem(1);
 			mNbCups = 1;
-		} else if (position == StroppyKettleApplication.NUMBER_OF_CUPS + 1) {
-			mPager.setCurrentItem(StroppyKettleApplication.NUMBER_OF_CUPS);
-			mNbCups = StroppyKettleApplication.NUMBER_OF_CUPS;
+		} else if (position == mMaxCups + 1) {
+			mPager.setCurrentItem(mMaxCups);
+			mNbCups = mMaxCups;
 		} else {
 			mNbCups = position;
 		}
