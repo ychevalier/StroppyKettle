@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
@@ -29,17 +30,18 @@ public abstract class GenericActivity extends FragmentActivity {
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
 	private static final String TAG = GenericActivity.class.getSimpleName();
 
+	private ConnectionReceiver mConnectionReceiver;
 	private WeightReceiver mWeightReceiver;
 
-	// Messenger for communicating with the service.
+	// Service.
 	protected Messenger mService = null;
-
-	// Flag indicating whether we have called bind on the service.
 	protected boolean mBound;
 
+	// Loading UI.
 	protected boolean mIsRefreshing;
 	private ProgressDialog mProgressDialog;
 
+	// Parameters that are shared.
 	protected int mStroppiness;
 	protected int mCondition;
 	protected String mAddress;
@@ -47,11 +49,19 @@ public abstract class GenericActivity extends FragmentActivity {
 	protected int mMaxCups;
 	protected int mAliveInterval;
 	protected int mDataInterval;
+	protected int mCupsTimeout;
+	protected int mGameTimeout;
+	protected int mBoilingTimeout;
+	protected int mProgressTimeout;
+	protected int mGameMaxSpeed;
+
+	protected boolean mIsConnected;
 
 	private ServiceConnection mConnection = new ServiceConnection() {
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			mService = new Messenger(service);
 			mBound = true;
+			onServiceBound();
 		}
 
 		public void onServiceDisconnected(ComponentName className) {
@@ -70,8 +80,10 @@ public abstract class GenericActivity extends FragmentActivity {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+		mConnectionReceiver = new ConnectionReceiver();
 		mWeightReceiver = new WeightReceiver();
 		mIsRefreshing = false;
+		mIsConnected = false;
 
 		// Restore preferences
 		SharedPreferences settings = getSharedPreferences(StroppyKettleApplication.PREFS_NAME, 0);
@@ -82,6 +94,11 @@ public abstract class GenericActivity extends FragmentActivity {
 		mMaxCups = settings.getInt(StroppyKettleApplication.PREF_MAX_CUPS, StroppyKettleApplication.DEFAULT_MAX_CUPS);
 		mAliveInterval = settings.getInt(StroppyKettleApplication.PREF_ALIVE_INTERVAL, StroppyKettleApplication.DEFAULT_ALIVE_INTERVAL);
 		mDataInterval = settings.getInt(StroppyKettleApplication.PREF_DATA_INTERVAL, StroppyKettleApplication.DEFAULT_DATA_INTERVAL);
+		mCupsTimeout = settings.getInt(StroppyKettleApplication.PREF_CUPS_TIMEOUT, StroppyKettleApplication.DEFAULT_CUPS_TIMEOUT);
+		mGameTimeout = settings.getInt(StroppyKettleApplication.PREF_GAME_TIMEOUT, StroppyKettleApplication.DEFAULT_GAME_TIMEOUT);
+		mBoilingTimeout = settings.getInt(StroppyKettleApplication.PREF_BOILING_TIMEOUT, StroppyKettleApplication.DEFAULT_BOILING_TIMEOUT);
+		mProgressTimeout = settings.getInt(StroppyKettleApplication.PREF_PROGRESS_TIMEOUT, StroppyKettleApplication.DEFAULT_PROGRESS_TIMEOUT);
+		mGameMaxSpeed = settings.getInt(StroppyKettleApplication.PREF_GAME_MAX_SPEED, StroppyKettleApplication.DEFAULT_GAME_MAX_SPEED);
 	}
 
 	@Override
@@ -95,17 +112,24 @@ public abstract class GenericActivity extends FragmentActivity {
 	protected void onStart() {
 		super.onStart();
 
-		registerReceiver(mWeightReceiver, new IntentFilter(
-				ReceiverList.WEIGHT_RECEIVER));
+		registerReceiver(mConnectionReceiver, new IntentFilter(ReceiverList.CONNECTION_RECEIVER));
+		registerReceiver(mWeightReceiver, new IntentFilter(ReceiverList.WEIGHT_RECEIVER));
 
 		bindService(new Intent(this, WeightService.class), mConnection,
 				Context.BIND_AUTO_CREATE);
+	}
+
+	// This is the soonest time
+	// we can send something to the service.
+	protected void onServiceBound() {
+		getConnectionState();
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
 
+		unregisterReceiver(mConnectionReceiver);
 		unregisterReceiver(mWeightReceiver);
 
 		// Unbind from the service
@@ -116,13 +140,17 @@ public abstract class GenericActivity extends FragmentActivity {
 	}
 
 	protected void setRefreshing(boolean enable) {
-		if(enable && !mIsRefreshing) {
+		if (enable && !mIsRefreshing) {
 			mProgressDialog = ProgressDialog.show(this, "",
-				"Loading...", true);
-		} else if(!enable && mIsRefreshing){
+					"Loading...", true);
+		} else if (!enable && mIsRefreshing) {
 			mProgressDialog.dismiss();
 		}
 		mIsRefreshing = enable;
+	}
+
+	protected void getConnectionState() {
+		sendMessage(WeightService.MSG_GET_CONNECTION_STATE);
 	}
 
 	protected void sendPowerMessage(boolean onoff) {
@@ -183,6 +211,16 @@ public abstract class GenericActivity extends FragmentActivity {
 			}
 		}
 		return true;
+	}
+
+	public class ConnectionReceiver extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			int state = intent.getIntExtra(ReceiverList.EXTRA_STATE, 0);
+			mIsConnected = state == 1;
+
+			Toast.makeText(GenericActivity.this, mIsConnected ? "Connected" : "Disconnected", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	public class WeightReceiver extends BroadcastReceiver {

@@ -6,13 +6,10 @@ import android.os.Handler;
 import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
 
-public class BoilingStroppyActivity extends GenericStroppyActivity  {
+public class BoilingStroppyActivity extends GenericStroppyActivity {
 
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
 	private static final String TAG = BoilingStroppyActivity.class.getSimpleName();
-
-	// TODO 10 seconds boiling for now.
-	private static final int BOILING_TIME = 10 * 1000;
 
 	private Runnable mBoilingRunnable = new Runnable() {
 		@Override
@@ -33,8 +30,8 @@ public class BoilingStroppyActivity extends GenericStroppyActivity  {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if(mHandler != null) {
-			mHandler.postDelayed(mBoilingRunnable, BOILING_TIME);
+		if (mHandler != null) {
+			mHandler.postDelayed(mBoilingRunnable, mBoilingTimeout * 1000);
 		}
 	}
 
@@ -44,7 +41,7 @@ public class BoilingStroppyActivity extends GenericStroppyActivity  {
 		sendPowerMessage(false);
 
 		super.onStop();
-		if(mHandler != null) {
+		if (mHandler != null) {
 			mHandler.removeCallbacks(mBoilingRunnable);
 		}
 	}

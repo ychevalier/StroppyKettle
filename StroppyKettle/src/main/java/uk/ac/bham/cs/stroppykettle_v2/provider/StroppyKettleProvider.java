@@ -36,6 +36,9 @@ public class StroppyKettleProvider extends ContentProvider {
 	private static final int SCALE = 40;
 	private static final int SCALE_ID = 41;
 
+	private static final int CONNECTIONS = 50;
+	private static final int CONNECTIONS_ID = 51;
+
 	static final String UNDERSCORE = "_";
 	static final String SLASH = "/";
 	static final String STAR = "*";
@@ -48,6 +51,10 @@ public class StroppyKettleProvider extends ContentProvider {
 	private static UriMatcher buildUriMatcher() {
 		final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 		final String authority = StroppyKettleContract.CONTENT_AUTHORITY;
+
+		matcher.addURI(authority, StroppyKettleContract.PATH_CONNECTIONS, CONNECTIONS);
+		matcher.addURI(authority, StroppyKettleContract.PATH_CONNECTIONS + SLASH
+				+ STAR, CONNECTIONS_ID);
 
 		matcher.addURI(authority, StroppyKettleContract.PATH_SCALE, SCALE);
 		matcher.addURI(authority, StroppyKettleContract.PATH_SCALE + SLASH
@@ -76,6 +83,10 @@ public class StroppyKettleProvider extends ContentProvider {
 	public String getType(Uri uri) {
 		final int match = sUriMatcher.match(uri);
 		switch (match) {
+			case CONNECTIONS:
+				return StroppyKettleContract.Connections.CONTENT_TYPE;
+			case CONNECTIONS_ID:
+				return StroppyKettleContract.Connections.CONTENT_ITEM_TYPE;
 			case SCALE:
 				return StroppyKettleContract.Scale.CONTENT_TYPE;
 			case SCALE_ID:
@@ -114,6 +125,11 @@ public class StroppyKettleProvider extends ContentProvider {
 		long id = -1;
 
 		switch (match) {
+			case CONNECTIONS:
+			case CONNECTIONS_ID:
+				id = db.insertOrThrow(Tables.CONNECTIONS, null, values);
+				getContext().getContentResolver().notifyChange(uri, null);
+				return ContentUris.withAppendedId(uri, id);
 			case SCALE:
 			case SCALE_ID:
 				// Insert if not in db, otherwise update nbCups.
@@ -155,6 +171,15 @@ public class StroppyKettleProvider extends ContentProvider {
 		final int match = sUriMatcher.match(uri);
 
 		switch (match) {
+			case CONNECTIONS:
+			case CONNECTIONS_ID:
+				try {
+					return db.update(Tables.CONNECTIONS, values,
+							StroppyKettleContract.Connections.CONNECTION_ID + "=" + id, null);
+				} catch (Exception e) {
+					return db.update(Tables.CONNECTIONS, values, selection,
+							selectionArgs);
+				}
 			case SCALE:
 			case SCALE_ID:
 				try {
@@ -205,6 +230,13 @@ public class StroppyKettleProvider extends ContentProvider {
 		final int match = sUriMatcher.match(uri);
 
 		switch (match) {
+			case CONNECTIONS:
+			case CONNECTIONS_ID:
+				try {
+					return db.delete(Tables.CONNECTIONS, StroppyKettleContract.Connections.CONNECTION_ID + "=" + id, null);
+				} catch (Exception e) {
+					return db.delete(Tables.CONNECTIONS, selection, selectionArgs);
+				}
 			case SCALE:
 			case SCALE_ID:
 				try {
@@ -250,6 +282,14 @@ public class StroppyKettleProvider extends ContentProvider {
 
 		int uriType = sUriMatcher.match(uri);
 		switch (uriType) {
+			case CONNECTIONS_ID:
+				queryBuilder.setTables(Tables.CONNECTIONS);
+				queryBuilder.appendWhere(StroppyKettleContract.Connections.CONNECTION_ID + "="
+						+ uri.getLastPathSegment());
+				break;
+			case CONNECTIONS:
+				queryBuilder.setTables(Tables.CONNECTIONS);
+				break;
 			case SCALE_ID:
 				queryBuilder.setTables(Tables.SCALE);
 				queryBuilder.appendWhere(Scale.SCALE_ID + "="

@@ -10,10 +10,17 @@ public class StroppyKettleContract {
 	private static final Uri BASE_CONTENT_URI = Uri.parse("content://"
 			+ CONTENT_AUTHORITY);
 
+	public static final String PATH_CONNECTIONS = "connections";
 	public static final String PATH_SCALE = "scale";
 	public static final String PATH_LOGS = "logs";
 	public static final String PATH_USERS = "users";
 	public static final String PATH_INTERACTIONS = "interactions";
+
+	interface ConnectionsColumns {
+		String CONNECTION_ID = BaseColumns._ID;
+		String CONNECTION_TIME = "datetime";
+		String CONNECTION_STATE = "state";
+	}
 
 	interface ScaleColumns {
 		String SCALE_ID = BaseColumns._ID;
@@ -41,10 +48,23 @@ public class StroppyKettleContract {
 		String INTERACTION_NB_CUPS = "nb_cups";
 		String INTERACTION_WEIGHT = "weight";
 		String INTERACTION_STROPPINESS = "stroppiness";
-		String INTERACTION_NB_SPINS = "nb_spins";
 		String INTERACTION_IS_STROPPY = "is_stroppy";
-		String INTERACTION_IS_SUCCESS = "is_success";
+		String INTERACTION_NB_SPINS = "nb_spins";
+		String INTERACTION_NB_FAILURES = "nb_failures";
 		String INTERACTION_USER_ID = "user_id";
+	}
+
+	public static class Connections implements ConnectionsColumns, BaseColumns {
+		public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon()
+				.appendPath(PATH_CONNECTIONS).build();
+
+		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.android.stroppykettle.connection";
+		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.android.stroppykettle.connection";
+
+		// Get One Connection --> Useless.
+		public static Uri buildConnectionsUri(String connectionId) {
+			return CONTENT_URI.buildUpon().appendPath(connectionId).build();
+		}
 	}
 
 	public static class Scale implements ScaleColumns, BaseColumns {

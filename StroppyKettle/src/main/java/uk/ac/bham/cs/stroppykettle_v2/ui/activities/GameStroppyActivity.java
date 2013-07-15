@@ -1,7 +1,6 @@
 package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,9 +8,11 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -20,7 +21,6 @@ import java.util.Calendar;
 
 import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
-import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract;
 
 public class GameStroppyActivity extends GenericStroppyActivity implements OnTouchListener,
 		OnGlobalLayoutListener {
@@ -33,8 +33,6 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 	public static final String EXTRA_NB_CUPS = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_NB_CUPS";
 	public static final String EXTRA_START_TIME = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_START_TIME";
 	public static final String EXTRA_USER_ID = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.GameStroppyActivity.EXTRA_USER_ID";
-
-	private static final int TIMEOUT = 10000;
 
 	private Runnable mTimeoutRunnable = new Runnable() {
 		@Override
@@ -53,17 +51,14 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 				if (mRevCounter == 0) {
 					timeIsOut();
 				} else {
-					mHandler.postDelayed(mDecrementRunnable, SEC_GO_DOWN);
+					mHandler.postDelayed(mDecrementRunnable, mProgressTimeout * 1000);
 				}
 			}
 		}
 	};
 
-	private static final int TRESHOLD = 40;
-
-	private static final int SEC_GO_DOWN = 1000;
-
 	private boolean mIsSuccess;
+	private int mNbFailures;
 
 	private long mUserId;
 	private float mWeight;
@@ -91,12 +86,37 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// Intents.
+		if (getIntent() != null) {
+			mNbCups = getIntent().getIntExtra(EXTRA_NB_CUPS, -1);
+			mUserId = getIntent().getLongExtra(EXTRA_USER_ID, -1);
+			mWeight = getIntent().getFloatExtra(EXTRA_WEIGHT, -1);
+			mStartTime = getIntent().getLongExtra(EXTRA_START_TIME, -1);
+			mNbSpins = getIntent().getIntExtra(EXTRA_NB_SPINS, -1);
+		}
+
+		if (getIntent() == null
+				|| mNbCups == -1
+				|| mUserId == -1
+				|| mWeight == -1
+				|| mStartTime == -1
+				|| mNbSpins == -1) {
+			if (DEBUG_MODE) {
+				Log.d(TAG, "No Parameters onStart. Aborting");
+			}
+			finish();
+			return;
+		}
+
+		// Views.
 		setContentView(R.layout.activity_game_stroppy);
 
 		mWheelView = (ImageView) findViewById(R.id.teaView);
 		mWheelView.setOnTouchListener(this);
 
 		mProgress = (ProgressBar) findViewById(R.id.progress_bar);
+		mProgress.setMax(mNbSpins);
 
 		Bitmap imageOriginal = BitmapFactory.decodeResource(getResources(),
 				R.drawable.wheel);
@@ -104,7 +124,16 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 		mOriginalWidth = imageOriginal.getWidth();
 		mOriginalHeight = imageOriginal.getHeight();
 		mMatrix = new Matrix();
-		mWheelView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+
+		ViewTreeObserver vto = mWheelView.getViewTreeObserver();
+		if (vto == null) {
+			if (DEBUG_MODE) {
+				Log.d(TAG, "Not able to get a ViewTreeObserver, aborting.");
+			}
+			finish();
+			return;
+		}
+		vto.addOnGlobalLayoutListener(this);
 
 		mHandler = new Handler();
 	}
@@ -112,17 +141,6 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 	@Override
 	protected void onStart() {
 		super.onStart();
-
-		int discrepancy = 0;
-		if (getIntent() != null) {
-			mNbCups = getIntent().getIntExtra(EXTRA_NB_CUPS, 0);
-			mUserId = getIntent().getLongExtra(EXTRA_USER_ID, 0);
-			mWeight = getIntent().getFloatExtra(EXTRA_WEIGHT, 0);
-			mStartTime = getIntent().getLongExtra(EXTRA_START_TIME, 0);
-			mNbSpins = getIntent().getIntExtra(EXTRA_NB_SPINS, 0);
-		}
-
-		mProgress.setMax(mNbSpins);
 
 		resetAndRelaunch();
 	}
@@ -141,7 +159,9 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 			mHandler.removeCallbacks(mTimeoutRunnable);
 		}
 
-		logInteraction();
+		Calendar cal = Calendar.getInstance();
+		long stopTime = cal.getTimeInMillis() / 1000;
+		interactionLog(mUserId, mCondition, mStartTime, stopTime, mWeight, mNbCups, true, mNbFailures, mStroppiness, mNbSpins);
 	}
 
 	private void resetAndRelaunch() {
@@ -149,6 +169,7 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 		mRotCounter = 0;
 		mProgress.setProgress(0);
 
+		mNbFailures = 0;
 		mIsSuccess = false;
 
 		if (mHandler != null) {
@@ -158,22 +179,7 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 
 		sendPowerMessage(true);
 
-		mHandler.postDelayed(mTimeoutRunnable, TIMEOUT);
-	}
-
-	private void logInteraction() {
-		Calendar cal = Calendar.getInstance();
-		ContentValues cv = new ContentValues();
-		cv.put(StroppyKettleContract.Interactions.INTERACTION_NB_CUPS, mNbCups);
-		cv.put(StroppyKettleContract.Interactions.INTERACTION_WEIGHT, mWeight);
-		cv.put(StroppyKettleContract.Interactions.INTERACTION_START_DATETIME, mStartTime);
-		cv.put(StroppyKettleContract.Interactions.INTERACTION_STOP_DATETIME, cal.getTimeInMillis() / 1000);
-		cv.put(StroppyKettleContract.Interactions.INTERACTION_USER_ID, mUserId);
-		cv.put(StroppyKettleContract.Interactions.INTERACTION_IS_SUCCESS, mIsSuccess);
-		cv.put(StroppyKettleContract.Interactions.INTERACTION_IS_STROPPY, 1);
-		cv.put(StroppyKettleContract.Interactions.INTERACTION_CONDITION, 0); // TODO
-
-		getContentResolver().insert(StroppyKettleContract.Interactions.CONTENT_URI, cv);
+		mHandler.postDelayed(mTimeoutRunnable, mGameTimeout * 1000);
 	}
 
 	@Override
@@ -202,6 +208,7 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 
 	private void timeIsOut() {
 		// The user has failed.
+		mNbFailures++;
 		sendPowerMessage(false);
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -244,7 +251,7 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 
 			float rotation = (float) (mStartAngle - currentAngle);
 
-			if (rotation > 0f && rotation < TRESHOLD) {
+			if (rotation > 0f && rotation < mGameMaxSpeed) {
 				if (mHandler != null) {
 					mHandler.removeCallbacks(mDecrementRunnable);
 				}
@@ -267,7 +274,7 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 
 				if (mRevCounter < mNbSpins) {
 					if (mHandler != null) {
-						mHandler.postDelayed(mDecrementRunnable, SEC_GO_DOWN);
+						mHandler.postDelayed(mDecrementRunnable, mProgressTimeout * 1000);
 					}
 				}
 			}

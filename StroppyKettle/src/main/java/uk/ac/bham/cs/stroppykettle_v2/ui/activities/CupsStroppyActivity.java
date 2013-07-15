@@ -4,12 +4,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
+import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
@@ -20,9 +22,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
@@ -40,25 +40,59 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 	public static final String EXTRA_USER_NAME = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.CupsStroppyActivity.EXTRA_USER_NAME";
 	public static final String EXTRA_START_TIME = "uk.ac.bham.cs.stroppykettle_v2.ui.activities.CupsStroppyActivity.EXTRA_START_TIME";
 
+	private static final int IS_WAITING_FOR_WEIGHT = 0;
+	private static final int IS_TIMEOUT = 1;
+	private static final int IS_NOTHING = 2;
+
+	private Runnable mTimeoutRunnable = new Runnable() {
+		@Override
+		public void run() {
+			setRefreshing(true);
+			mState = IS_TIMEOUT;
+			getCurrentWeight();
+		}
+	};
+
 	private ViewPager mPager;
-	private int mNbCups;
 
-	private long mUserId;
+	private int mState;
 
-	private TextView mTitle;
-
-	private Map<Integer, Float> mCupWeightRef;
-
-	private boolean mIsWaitingForWeight;
+	protected SparseArray<Float> mCupWeightRef;
 
 	private long mStartTime;
+	private int mNbCups;
+	private long mUserId;
+
+	private Handler mHandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// Intents
+		String name = null;
+		if (getIntent() != null) {
+			name = getIntent().getStringExtra(EXTRA_USER_NAME);
+			mUserId = getIntent().getLongExtra(EXTRA_USER_ID, -1);
+			mStartTime = getIntent().getLongExtra(EXTRA_START_TIME, -1);
+		}
+
+		if (getIntent() == null
+				|| name == null
+				|| mUserId == -1
+				|| mStartTime == -1) {
+			if (DEBUG_MODE) {
+				Log.d(TAG, "Intent not complete, aborting.");
+			}
+			finish();
+			return;
+		}
+
+		// Views
 		setContentView(R.layout.activity_cups_stroppy);
 
-		mTitle = (TextView) findViewById(R.id.cups_title);
+		TextView title = (TextView) findViewById(R.id.cups_title);
+		title.setText(String.format(getString(R.string.cups_title), name));
 
 		Button stroppyButton = (Button) findViewById(R.id.cups_button);
 		stroppyButton.setOnClickListener(this);
@@ -74,57 +108,50 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 
 		mPager.setOffscreenPageLimit(mMaxCups);
 		mPager.setAdapter(pageAdapter);
-
+		mPager.setCurrentItem(1, false);
 		mPager.setOnPageChangeListener(this);
 
-		mCupWeightRef = new HashMap<Integer, Float>();
+		// Initialisations
 
-		mIsWaitingForWeight = false;
-	}
+		mCupWeightRef = new SparseArray<Float>();
 
-	@Override
-	protected void onStart() {
-		super.onStart();
-		String name = null;
-		if (getIntent() != null) {
-			name = getIntent().getStringExtra(EXTRA_USER_NAME);
-			mUserId = getIntent().getLongExtra(EXTRA_USER_ID, -1);
-			mStartTime = getIntent().getLongExtra(EXTRA_START_TIME, -1);
-		}
-		if (name == null) {
-			name = "";
-		}
-
-		mTitle.setText(String.format(getString(R.string.cups_title), name));
-
+		mState = IS_NOTHING;
 		mNbCups = 1;
-		if (mPager != null) {
-			mPager.setCurrentItem(mNbCups, false);
-		}
+
+		mHandler = new Handler();
+
+		mHandler.postDelayed(mTimeoutRunnable, mCupsTimeout * 1000);
 
 		getSupportLoaderManager().restartLoader(0, null, this);
 		setRefreshing(true);
 	}
 
 	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		if (mHandler != null) {
+			mHandler.removeCallbacks(mTimeoutRunnable);
+		}
+	}
+
+	@Override
 	protected void receivedNewWeight(float weight) {
-		if (mIsWaitingForWeight) {
-			mIsWaitingForWeight = false;
+		if (mState == IS_WAITING_FOR_WEIGHT) {
 			setRefreshing(false);
 			sendPowerMessage(true);
 
-			int nbSpins = (mCondition == StroppyKettleApplication.CONDITION_STROPPY?
+			int nbSpins = (mCondition == StroppyKettleApplication.CONDITION_STROPPY ?
 					StroppyKettleApplication.computeNbSpins(
-							weight, mCupWeightRef.get(mNbCups) == null?
-								0 : mCupWeightRef.get(mNbCups), mStroppiness, mPrecision) : 0);
+							weight, mCupWeightRef.get(mNbCups) == null ?
+							0 : mCupWeightRef.get(mNbCups), mStroppiness, mPrecision) : 0);
 
-			if(DEBUG_MODE) {
+			if (DEBUG_MODE) {
 				Log.d(TAG, "Condition : " + mCondition + " - Spins " + nbSpins + " - Weight : " + weight + " - Expected Weight : " + mCupWeightRef.get(mNbCups));
 			}
 
 			Intent i;
-			if(nbSpins == 0) {
-				interactionLog(mUserId, mCondition, mStartTime, -1, weight, mNbCups, false, true, mStroppiness, nbSpins);
+			if (nbSpins == 0) {
+				interactionLog(mUserId, mCondition, mStartTime, -1, weight, mNbCups, false, 0, mStroppiness, nbSpins);
 				i = new Intent(this, BoilingStroppyActivity.class);
 			} else {
 				i = new Intent(this, GameStroppyActivity.class);
@@ -136,7 +163,13 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 			}
 			startActivity(i);
 			finish();
+		} else if (mState == IS_TIMEOUT) {
+			setRefreshing(false);
+			sendPowerMessage(false);
+			interactionLog(mUserId, mCondition, mStartTime, -1, weight, mNbCups, false, 1, mStroppiness, -1);
+			finish();
 		}
+		mState = IS_NOTHING;
 	}
 
 	private List<View> getViews() {
@@ -171,7 +204,7 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 		switch (v.getId()) {
 			case R.id.cups_button:
 				setRefreshing(true);
-				mIsWaitingForWeight = true;
+				mState = IS_WAITING_FOR_WEIGHT;
 				getCurrentWeight();
 				break;
 		}
@@ -189,14 +222,14 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
 		setRefreshing(false);
 
-		if(cursor == null) return;
+		if (cursor == null) return;
 
-		while(cursor.moveToNext()) {
+		while (cursor.moveToNext()) {
 			mCupWeightRef.put(cursor.getInt(cursor
 					.getColumnIndex(StroppyKettleContract.Scale.SCALE_NB_CUPS)), cursor.getFloat(cursor
 					.getColumnIndex(StroppyKettleContract.Scale.SCALE_WEIGHT)));
 
-			if(DEBUG_MODE) {
+			if (DEBUG_MODE) {
 				Log.d(TAG, cursor.getInt(cursor
 						.getColumnIndex(StroppyKettleContract.Scale.SCALE_NB_CUPS)) + " -  " + cursor.getFloat(cursor
 						.getColumnIndex(StroppyKettleContract.Scale.SCALE_WEIGHT)));

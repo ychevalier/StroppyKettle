@@ -59,12 +59,14 @@ public class LoginStroppyActivity extends GenericStroppyActivity implements
 		userList.setOnItemClickListener(this);
 		mAdapter = new UsersCursorAdapter(this);
 		userList.setAdapter(mAdapter);
+
+		getSupportLoaderManager().restartLoader(0, null, this);
 	}
 
 	@Override
-	protected void onStart() {
-		super.onStart();
-		getSupportLoaderManager().restartLoader(0, null, this);
+	protected void onServiceBound() {
+		super.onServiceBound();
+		sendPowerMessage(false);
 	}
 
 	@Override
@@ -74,9 +76,8 @@ public class LoginStroppyActivity extends GenericStroppyActivity implements
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		String[] projection = {Users.USER_ID, Users.USER_NAME};
 
-		CursorLoader cursorLoader = new CursorLoader(this, Users.CONTENT_URI,
+		return new CursorLoader(this, Users.CONTENT_URI,
 				projection, null, null, null);
-		return cursorLoader;
 	}
 
 	@Override
@@ -91,16 +92,20 @@ public class LoginStroppyActivity extends GenericStroppyActivity implements
 
 	private void startCupsActivityOrLog(long id, String name) {
 
+		Calendar cal = Calendar.getInstance();
+		long startTime = cal.getTimeInMillis() / 1000;
+
 		Intent i;
-		if(mCondition == StroppyKettleApplication.CONDITION_LOGIN) {
-			Calendar cal = Calendar.getInstance();
-			interactionLog(id, mCondition, cal.getTimeInMillis() / 1000, -1, -1, -1, false, false, -1, -1);
+		if (mCondition == StroppyKettleApplication.CONDITION_LOGIN) {
+
+			interactionLog(id, mCondition, startTime, -1, -1, -1, false, 0, -1, -1);
 			i = new Intent(this, BoilingStroppyActivity.class);
 			sendPowerMessage(true);
 		} else {
 			i = new Intent(this, CupsStroppyActivity.class);
 			i.putExtra(CupsStroppyActivity.EXTRA_USER_NAME, name);
 			i.putExtra(CupsStroppyActivity.EXTRA_USER_ID, id);
+			i.putExtra(CupsStroppyActivity.EXTRA_START_TIME, startTime);
 		}
 		startActivity(i);
 	}

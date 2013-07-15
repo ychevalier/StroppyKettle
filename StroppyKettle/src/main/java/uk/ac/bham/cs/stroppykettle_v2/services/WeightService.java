@@ -31,6 +31,7 @@ public class WeightService extends Service implements AmarinoListener {
 	public static final int MSG_CONNECT = 2;
 	public static final int MSG_DISCONNECT = 3;
 	public static final int MSG_ALIVE = 4;
+	public static final int MSG_GET_CONNECTION_STATE = 5;
 
 	// This is the object that receives interactions from clients. See
 	// RemoteService for a more complete example.
@@ -47,6 +48,8 @@ public class WeightService extends Service implements AmarinoListener {
 	private String mAddress;
 
 	private int mAliveInterval;
+
+	private boolean mIsConnected;
 
 	Runnable mAliveTask = new Runnable() {
 		public void run() {
@@ -76,6 +79,8 @@ public class WeightService extends Service implements AmarinoListener {
 
 		mHandler = new Handler();
 
+		mIsConnected = false;
+
 		mHasAskedDisconnection = false;
 
 		SharedPreferences settings = getSharedPreferences(StroppyKettleApplication.PREFS_NAME, 0);
@@ -91,6 +96,7 @@ public class WeightService extends Service implements AmarinoListener {
 
 	@Override
 	public IBinder onBind(Intent intent) {
+		broadcastConnection(mIsConnected ? 1 : 0);
 		return mMessenger.getBinder();
 	}
 
@@ -104,7 +110,7 @@ public class WeightService extends Service implements AmarinoListener {
 
 	private void startAliveTask() {
 		stopAliveTask();
-		if(mHandler != null) {
+		if (mHandler != null) {
 			mHandler.postDelayed(mAliveTask, mAliveInterval * 1000);
 		}
 	}
@@ -116,19 +122,27 @@ public class WeightService extends Service implements AmarinoListener {
 	}
 
 	private void startReconnectTask() {
-		if(mHandler != null) {
+		if (mHandler != null) {
 			mHandler.postDelayed(mReconnectTask, mAliveInterval * 1000);
 		}
 	}
 
 	private void stopReconnectTask() {
-		if(mHandler != null) {
+		if (mHandler != null) {
 			mHandler.removeCallbacks(mReconnectTask);
 		}
 	}
 
+	private void broadcastConnection(int state) {
+		Intent i = new Intent();
+		i.setAction(ReceiverList.CONNECTION_RECEIVER);
+		i.putExtra(ReceiverList.EXTRA_STATE, state);
+		sendBroadcast(i);
+	}
+
 	private void broadcastWeight(float weight) {
-		Intent i = new Intent(ReceiverList.WEIGHT_RECEIVER);
+		Intent i = new Intent();
+		i.setAction(ReceiverList.WEIGHT_RECEIVER);
 		i.putExtra(ReceiverList.EXTRA_WEIGHT, weight);
 		sendBroadcast(i);
 	}
@@ -145,7 +159,7 @@ public class WeightService extends Service implements AmarinoListener {
 						BluetoothSerial.POWER_EVENT, arg);
 				break;
 			case MSG_GET_CURRENT:
-				AmarinoHelper.sendDataToArduino(this,mAddress,
+				AmarinoHelper.sendDataToArduino(this, mAddress,
 						BluetoothSerial.WEIGHT_INFO, arg);
 				break;
 			case MSG_CONNECT:
@@ -159,29 +173,56 @@ public class WeightService extends Service implements AmarinoListener {
 				AmarinoHelper.sendDataToArduino(this, mAddress,
 						BluetoothSerial.ALIVE, arg);
 				break;
+			case MSG_GET_CONNECTION_STATE:
+				broadcastConnection(mIsConnected ? 1 : 0);
+				break;
 		}
 	}
 
 	public void onConnectResult(int result, String from) {
 		if (result == CONNECT_SUCCEDED) {
 			startAliveTask();
+
+			mIsConnected = true;
+			broadcastConnection(1);
+
+			Calendar cal = Calendar.getInstance();
+			long time = cal.getTimeInMillis() / 1000;
+
+			ContentValues cv = new ContentValues();
+			cv.put(StroppyKettleContract.Connections.CONNECTION_TIME, time);
+			cv.put(StroppyKettleContract.Connections.CONNECTION_STATE, 1);
+
+			getContentResolver().insert(StroppyKettleContract.Connections.CONTENT_URI, cv);
 		} else {
 			startReconnectTask();
 		}
 	}
 
 	public void onDisconnectResult(String from) {
-		if(!mHasAskedDisconnection) {
+		if (!mHasAskedDisconnection) {
 			startReconnectTask();
 		}
 		mHasAskedDisconnection = false;
+
+		mIsConnected = false;
+		broadcastConnection(0);
+
+		Calendar cal = Calendar.getInstance();
+		long time = cal.getTimeInMillis() / 1000;
+
+		ContentValues cv = new ContentValues();
+		cv.put(StroppyKettleContract.Connections.CONNECTION_TIME, time);
+		cv.put(StroppyKettleContract.Connections.CONNECTION_STATE, 0);
+
+		getContentResolver().insert(StroppyKettleContract.Connections.CONTENT_URI, cv);
 	}
 
 	public void onReceiveData(String data, String from) {
 		startAliveTask();
 
 		try {
-			float weight = new Float(data);
+			float weight = Float.valueOf(data);
 
 			if (weight == BluetoothSerial.ALIVE_REPLY) return;
 
