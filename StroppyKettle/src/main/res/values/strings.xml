@@ -43,4 +43,11 @@
     <string name="clear">Clear</string>
     <string name="connect">Con</string>
     <string name="disconnect">Dis</string>
+
+    <!-- Test Arrays -->
+    <string-array name="an_array">
+        <item>one</item>
+        <item>two</item>
+        <item>three</item>
+    </string-array>
 </resources>

@@ -74,7 +74,7 @@ public class CalibrationActivity extends GenericActivity implements
 
 	@Override
 	public void onClick(View view) {
-		if(view == mWeightIndicator) {
+		if (view == mWeightIndicator) {
 			getCurrentWeight();
 		}
 	}
@@ -116,7 +116,7 @@ public class CalibrationActivity extends GenericActivity implements
 
 		} else {
 			mCurrentPosition = position;
-			if(!mDoNotUpdateOnCancel) {
+			if (!mDoNotUpdateOnCancel) {
 				// We are using position -2 because it starts at -1 and
 				// we are at the next position that the one we want to update.
 				ContentValues cv = new ContentValues();

@@ -74,8 +74,8 @@ public abstract class GenericActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
-				WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		//getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+		//		WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -199,6 +199,11 @@ public abstract class GenericActivity extends FragmentActivity {
 				if (!(this instanceof MonitorActivity)) {
 					i = new Intent(this, MonitorActivity.class);
 				}
+				break;
+			case R.id.action_settings:
+				//if (!(this instanceof SettingsActivity)) {
+				i = new Intent(this, SettingsActivity.class);
+				//}
 				break;
 		}
 		if (i != null) {
