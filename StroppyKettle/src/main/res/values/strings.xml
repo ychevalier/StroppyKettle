@@ -52,6 +52,7 @@
     <string name="scale_params">Scale Parameters</string>
     <string name="usability_params">Usability Parameters</string>
     <string name="com_params">Communication Parameters</string>
+    <string name="others">Others</string>
 
     <!-- Condition -->
     <string name="condition_key">Condition</string>
@@ -69,6 +70,10 @@
         <item>1</item>
         <item>2</item>
     </string-array>
+
+    <!-- Export DB -->
+    <string name="export_title">Export DB</string>
+    <string name="export_summary">Export database.db on SD Card</string>
 
     <!-- Calibration -->
     <string name="calibration_title">Calibration</string>

@@ -16,8 +16,4 @@ public class SettingsActivity extends GenericActivity {
 		getFragmentManager().beginTransaction().replace(android.R.id.content,
 				new SettingsFragment()).commit();
 	}
-
-	@Override
-	protected void onReceiveNewWeight(float weight) {
-	}
 }

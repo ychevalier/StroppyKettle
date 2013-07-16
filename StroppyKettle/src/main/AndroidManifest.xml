@@ -12,12 +12,18 @@
     <uses-permission android:name="android.permission.BLUETOOTH"></uses-permission>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"></uses-permission>
 
+    <!-- Export DB Stuff -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
             android:name=".StroppyKettleApplication"
             android:allowBackup="true"
             android:icon="@drawable/ic_launcher"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
+
+        <activity
+                android:name=".ui.activities.ExportActivity"/>
         <activity
                 android:name=".ui.activities.SettingsActivity"
                 android:screenOrientation="portrait"/>

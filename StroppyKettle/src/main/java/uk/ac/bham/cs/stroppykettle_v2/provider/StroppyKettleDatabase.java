@@ -17,7 +17,7 @@ public class StroppyKettleDatabase extends SQLiteOpenHelper {
 	public static final Boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
 	protected static final String TAG = StroppyKettleDatabase.class.getSimpleName();
 
-	private static final String DATABASE_NAME = "stroppykettle.db";
+	public static final String DATABASE_NAME = "stroppykettle.db";
 	private static final int DATABASE_VERSION = 1;
 
 	interface Tables {

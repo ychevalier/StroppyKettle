@@ -143,4 +143,17 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+            android:title="@string/others">
+
+        <PreferenceScreen
+                android:title="@string/export_title"
+                android:summary="@string/export_summary">
+            <intent
+                    android:targetPackage="uk.ac.bham.cs.stroppykettle_v2"
+                    android:targetClass="uk.ac.bham.cs.stroppykettle_v2.ui.activities.ExportActivity"/>
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
