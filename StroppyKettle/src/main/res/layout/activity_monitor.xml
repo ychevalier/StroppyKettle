@@ -9,7 +9,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/std_margin"
             android:layout_alignParentBottom="true"
+            android:gravity="center"
             android:orientation="horizontal">
+
+        <Button
+                android:id="@+id/connectButton"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
 
         <ToggleButton
                 android:id="@+id/powerButton"
@@ -23,20 +30,6 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="@string/clear"/>
-
-        <Button
-                android:id="@+id/connectButton"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/connect"/>
-
-        <Button
-                android:id="@+id/disconnectButton"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/disconnect"/>
 
     </LinearLayout>
 

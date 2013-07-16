@@ -1,0 +1,146 @@
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:custom="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+            android:title="@string/exp_params">
+
+        <uk.ac.bham.cs.stroppykettle_v2.preferences.IntListPreference
+                android:key="@string/condition_key"
+                android:title="@string/condition_title"
+                android:summary="@string/condition_summary"
+                android:entries="@array/conditions"
+                android:entryValues="@array/condition_values"
+                android:defaultValue="@integer/condition_default"
+                android:dialogTitle="@string/condition_dialog_title"/>
+
+        <uk.ac.bham.cs.stroppykettle_v2.preferences.NumberPickerPreference
+                android:summary="@string/stroppiness_summary"
+                android:title="@string/stroppiness_title"
+                android:dialogTitle="@string/stroppiness_dialog_title"
+                android:key="@string/stroppiness_key"
+                android:dialogMessage="@string/stroppiness_dialog_message"
+                android:defaultValue="@integer/stroppiness_default"
+                custom:min="@integer/stroppiness_min"
+                android:max="@integer/stroppiness_max"/>
+
+    </PreferenceCategory>
+    <PreferenceCategory
+            android:title="@string/scale_params">
+        <PreferenceScreen
+                android:title="@string/calibration_title"
+                android:summary="@string/calibration_summary">
+            <intent
+                    android:targetPackage="uk.ac.bham.cs.stroppykettle_v2"
+                    android:targetClass="uk.ac.bham.cs.stroppykettle_v2.ui.activities.CalibrationActivity"/>
+        </PreferenceScreen>
+
+        <uk.ac.bham.cs.stroppykettle_v2.preferences.NumberPickerPreference
+                android:summary="@string/precision_summary"
+                android:title="@string/precision_title"
+                android:dialogTitle="@string/precision_dialog_title"
+                android:key="@string/precision_key"
+                custom:min="@integer/precision_min"
+                android:max="@integer/precision_max"
+                android:defaultValue="@integer/precision_default"/>
+
+        <uk.ac.bham.cs.stroppykettle_v2.preferences.NumberPickerPreference
+                android:summary="@string/max_cups_summary"
+                android:title="@string/max_cups_title"
+                android:dialogTitle="@string/max_cups_dialog_title"
+                android:key="@string/max_cups_key"
+                custom:min="@integer/max_cups_min"
+                android:max="@integer/max_cups_max"
+                android:defaultValue="@integer/max_cups_default"/>
+
+    </PreferenceCategory>
+    <PreferenceCategory
+            android:title="@string/usability_params">
+
+        <uk.ac.bham.cs.stroppykettle_v2.preferences.NumberPickerPreference
+                android:summary="@string/cups_timeout_summary"
+                android:title="@string/cups_timeout_title"
+                android:dialogTitle="@string/cups_timeout_dialog_title"
+                android:key="@string/cups_timeout_key"
+                android:dialogMessage="@string/cups_timeout_dialog_message"
+                custom:min="@integer/cups_timeout_min"
+                android:max="@integer/cups_timeout_max"
+                android:defaultValue="@integer/cups_timeout_default"/>
+
+        <uk.ac.bham.cs.stroppykettle_v2.preferences.NumberPickerPreference
+                android:summary="@string/game_timeout_summary"
+                android:title="@string/game_timeout_title"
+                android:dialogTitle="@string/game_timeout_dialog_title"
+                android:key="@string/game_timeout_key"
+                android:dialogMessage="@string/game_timeout_dialog_message"
+                custom:min="@integer/game_timeout_min"
+                android:max="@integer/game_timeout_max"
+                android:defaultValue="@integer/game_timeout_default"/>
+
+        <uk.ac.bham.cs.stroppykettle_v2.preferences.NumberPickerPreference
+                android:summary="@string/boiling_timeout_summary"
+                android:title="@string/boiling_timeout_title"
+                android:dialogTitle="@string/boiling_timeout_dialog_title"
+                android:key="@string/boiling_timeout_key"
+                android:dialogMessage="@string/boiling_timeout_dialog_message"
+                custom:min="@integer/boiling_timeout_min"
+                android:max="@integer/boiling_timeout_max"
+                android:defaultValue="@integer/boiling_timeout_default"/>
+
+
+        <uk.ac.bham.cs.stroppykettle_v2.preferences.NumberPickerPreference
+                android:summary="@string/progress_timeout_summary"
+                android:title="@string/progress_timeout_title"
+                android:dialogTitle="@string/progress_timeout_dialog_title"
+                android:key="@string/progress_timeout_key"
+                android:dialogMessage="@string/progress_timeout_dialog_message"
+                custom:min="@integer/progress_timeout_min"
+                android:max="@integer/progress_timeout_max"
+                android:defaultValue="@integer/progress_timeout_default"/>
+
+        <uk.ac.bham.cs.stroppykettle_v2.preferences.NumberPickerPreference
+                android:summary="@string/game_max_speed_summary"
+                android:title="@string/game_max_speed_title"
+                android:dialogTitle="@string/game_max_speed_dialog_title"
+                android:key="@string/game_max_speed_key"
+                android:dialogMessage="@string/game_max_speed_dialog_message"
+                custom:min="@integer/game_max_speed_min"
+                android:max="@integer/game_max_speed_max"
+                android:defaultValue="@integer/game_max_speed_default"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            android:title="@string/com_params">
+
+        <EditTextPreference
+                android:summary="@string/address_summary"
+                android:title="@string/address_title"
+                android:dialogTitle="@string/address_dialog_title"
+                android:key="@string/address_key"
+                android:defaultValue="@string/address_default"
+                />
+
+        <uk.ac.bham.cs.stroppykettle_v2.preferences.NumberPickerPreference
+                android:summary="@string/alive_summary"
+                android:title="@string/alive_title"
+                android:dialogTitle="@string/alive_dialog_title"
+                android:key="@string/alive_key"
+                android:dialogMessage="@string/alive_dialog_message"
+                custom:min="@integer/alive_min"
+                android:max="@integer/alive_max"
+                android:defaultValue="@integer/alive_default"/>
+
+        <uk.ac.bham.cs.stroppykettle_v2.preferences.NumberPickerPreference
+                android:summary="@string/data_summary"
+                android:title="@string/data_title"
+                android:dialogTitle="@string/data_dialog_title"
+                android:key="@string/data_key"
+                android:dialogMessage="@string/data_dialog_message"
+                custom:min="@integer/data_min"
+                android:max="@integer/data_max"
+                android:defaultValue="@integer/data_default"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

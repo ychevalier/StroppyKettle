@@ -183,7 +183,7 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 	}
 
 	@Override
-	protected void receivedNewWeight(float weight) {
+	protected void onReceiveNewWeight(float weight) {
 		finish();
 	}
 
@@ -251,7 +251,8 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 
 			float rotation = (float) (mStartAngle - currentAngle);
 
-			if (rotation > 0f && rotation < mGameMaxSpeed) {
+			// max speed is completely arbitrary
+			if (rotation > 0f && rotation < mGameMaxSpeed * 3 + 10) {
 				if (mHandler != null) {
 					mHandler.removeCallbacks(mDecrementRunnable);
 				}

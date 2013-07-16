@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Condition -->
+    <integer name="condition_login">0</integer>
+    <integer name="condition_monitoring">1</integer>
+    <integer name="condition_stroppy">2</integer>
+    <integer name="condition_default">2</integer>
+
+    <!-- Stroppiness -->
+    <integer name="stroppiness_min">1</integer>
+    <integer name="stroppiness_max">100</integer>
+    <integer name="stroppiness_default">100</integer>
+
+    <!-- Precision -->
+    <integer name="precision_min">1</integer>
+    <integer name="precision_max">20</integer>
+    <integer name="precision_default">10</integer>
+
+    <!-- MaxCups -->
+    <integer name="max_cups_min">1</integer>
+    <integer name="max_cups_max">10</integer>
+    <integer name="max_cups_default">5</integer>
+
+    <!-- Alive Interval -->
+    <integer name="alive_min">1</integer>
+    <integer name="alive_max">120</integer>
+    <integer name="alive_default">3</integer>
+
+    <!-- Data Interval -->
+    <integer name="data_min">1</integer>
+    <integer name="data_max">48</integer>
+    <integer name="data_default">5</integer>
+
+    <!-- Cups Timeout -->
+    <integer name="cups_timeout_min">1</integer>
+    <integer name="cups_timeout_max">120</integer>
+    <integer name="cups_timeout_default">10</integer>
+
+    <!-- Game Timeout -->
+    <integer name="game_timeout_min">1</integer>
+    <integer name="game_timeout_max">120</integer>
+    <integer name="game_timeout_default">10</integer>
+
+    <!-- Boiling Timeout -->
+    <integer name="boiling_timeout_min">1</integer>
+    <integer name="boiling_timeout_max">120</integer>
+    <integer name="boiling_timeout_default">10</integer>
+
+    <!-- Progress Bar Timeout -->
+    <integer name="progress_timeout_min">1</integer>
+    <integer name="progress_timeout_max">10</integer>
+    <integer name="progress_timeout_default">1</integer>
+
+    <!-- Game Max Speed -->
+    <integer name="game_max_speed_min">1</integer>
+    <integer name="game_max_speed_max">10</integer>
+    <integer name="game_max_speed_default">10</integer>
+</resources>

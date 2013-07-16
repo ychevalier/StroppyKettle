@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.preference.PreferenceManager;
 
 import java.util.Calendar;
 import java.util.Map;
@@ -16,6 +17,7 @@ import java.util.Map;
 import at.abraxas.amarino.AmarinoHelper;
 import at.abraxas.amarino.AmarinoListener;
 import at.abraxas.amarino.AmarinoReceiver;
+import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
 import uk.ac.bham.cs.stroppykettle_v2.protocols.BluetoothSerial;
 import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract;
@@ -83,9 +85,9 @@ public class WeightService extends Service implements AmarinoListener {
 
 		mHasAskedDisconnection = false;
 
-		SharedPreferences settings = getSharedPreferences(StroppyKettleApplication.PREFS_NAME, 0);
-		mAddress = settings.getString(StroppyKettleApplication.PREF_ADDRESS, StroppyKettleApplication.DEFAULT_ADDRESS);
-		mAliveInterval = settings.getInt(StroppyKettleApplication.PREF_ALIVE_INTERVAL, StroppyKettleApplication.DEFAULT_ALIVE_INTERVAL);
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		mAddress = settings.getString(getString(R.string.address_key), getString(R.string.address_default));
+		mAliveInterval = settings.getInt(getString(R.string.alive_key), getResources().getInteger(R.integer.alive_default));
 	}
 
 	@Override

@@ -47,7 +47,7 @@ public class BoilingStroppyActivity extends GenericStroppyActivity {
 	}
 
 	@Override
-	protected void receivedNewWeight(float weight) {
+	protected void onReceiveNewWeight(float weight) {
 		BoilingStroppyActivity.this.finish();
 	}
 

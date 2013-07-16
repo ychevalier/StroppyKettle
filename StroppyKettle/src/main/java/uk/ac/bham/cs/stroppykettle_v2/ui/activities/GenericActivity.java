@@ -13,12 +13,12 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
@@ -86,19 +86,19 @@ public abstract class GenericActivity extends FragmentActivity {
 		mIsConnected = false;
 
 		// Restore preferences
-		SharedPreferences settings = getSharedPreferences(StroppyKettleApplication.PREFS_NAME, 0);
-		mStroppiness = settings.getInt(StroppyKettleApplication.PREF_STROPPINESS, StroppyKettleApplication.DEFAULT_STROPPINESS);
-		mCondition = settings.getInt(StroppyKettleApplication.PREF_CONDITION, StroppyKettleApplication.DEFAULT_CONDITION);
-		mAddress = settings.getString(StroppyKettleApplication.PREF_ADDRESS, StroppyKettleApplication.DEFAULT_ADDRESS);
-		mPrecision = settings.getInt(StroppyKettleApplication.PREF_PRECISION, StroppyKettleApplication.DEFAULT_PRECISION);
-		mMaxCups = settings.getInt(StroppyKettleApplication.PREF_MAX_CUPS, StroppyKettleApplication.DEFAULT_MAX_CUPS);
-		mAliveInterval = settings.getInt(StroppyKettleApplication.PREF_ALIVE_INTERVAL, StroppyKettleApplication.DEFAULT_ALIVE_INTERVAL);
-		mDataInterval = settings.getInt(StroppyKettleApplication.PREF_DATA_INTERVAL, StroppyKettleApplication.DEFAULT_DATA_INTERVAL);
-		mCupsTimeout = settings.getInt(StroppyKettleApplication.PREF_CUPS_TIMEOUT, StroppyKettleApplication.DEFAULT_CUPS_TIMEOUT);
-		mGameTimeout = settings.getInt(StroppyKettleApplication.PREF_GAME_TIMEOUT, StroppyKettleApplication.DEFAULT_GAME_TIMEOUT);
-		mBoilingTimeout = settings.getInt(StroppyKettleApplication.PREF_BOILING_TIMEOUT, StroppyKettleApplication.DEFAULT_BOILING_TIMEOUT);
-		mProgressTimeout = settings.getInt(StroppyKettleApplication.PREF_PROGRESS_TIMEOUT, StroppyKettleApplication.DEFAULT_PROGRESS_TIMEOUT);
-		mGameMaxSpeed = settings.getInt(StroppyKettleApplication.PREF_GAME_MAX_SPEED, StroppyKettleApplication.DEFAULT_GAME_MAX_SPEED);
+		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		mStroppiness = settings.getInt(getString(R.string.stroppiness_key), getResources().getInteger(R.integer.stroppiness_default));
+		mCondition = settings.getInt(getString(R.string.condition_key), getResources().getInteger(R.integer.condition_default));
+		mAddress = settings.getString(getString(R.string.address_key), getString(R.string.address_default));
+		mPrecision = settings.getInt(getString(R.string.precision_key), getResources().getInteger(R.integer.precision_default));
+		mMaxCups = settings.getInt(getString(R.string.max_cups_key), getResources().getInteger(R.integer.max_cups_default));
+		mAliveInterval = settings.getInt(getString(R.string.alive_key), getResources().getInteger(R.integer.alive_default));
+		mDataInterval = settings.getInt(getString(R.string.data_key), getResources().getInteger(R.integer.data_default));
+		mCupsTimeout = settings.getInt(getString(R.string.cups_timeout_key), getResources().getInteger(R.integer.cups_timeout_default));
+		mGameTimeout = settings.getInt(getString(R.string.game_timeout_key), getResources().getInteger(R.integer.game_timeout_default));
+		mBoilingTimeout = settings.getInt(getString(R.string.boiling_timeout_key), getResources().getInteger(R.integer.boiling_timeout_default));
+		mProgressTimeout = settings.getInt(getString(R.string.progress_timeout_key), getResources().getInteger(R.integer.progress_timeout_default));
+		mGameMaxSpeed = settings.getInt(getString(R.string.game_max_speed_key), getResources().getInteger(R.integer.game_max_speed_default));
 	}
 
 	@Override
@@ -184,26 +184,33 @@ public abstract class GenericActivity extends FragmentActivity {
 		}
 	}
 
-	protected abstract void receivedNewWeight(float weight);
+	protected void onReceiveNewWeight(float weight) {
+	}
+
+	protected void onConnect() {
+	}
+
+	protected void onDisconnect() {
+	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent i = null;
 		switch (item.getItemId()) {
-			case R.id.action_calibration:
-				if (!(this instanceof CalibrationActivity)) {
-					i = new Intent(this, CalibrationActivity.class);
-				}
-				break;
+			//case R.id.action_calibration:
+			//	if (!(this instanceof CalibrationActivity)) {
+			//		i = new Intent(this, CalibrationActivity.class);
+			//	}
+			//	break;
 			case R.id.action_monitor:
 				if (!(this instanceof MonitorActivity)) {
 					i = new Intent(this, MonitorActivity.class);
 				}
 				break;
 			case R.id.action_settings:
-				//if (!(this instanceof SettingsActivity)) {
-				i = new Intent(this, SettingsActivity.class);
-				//}
+				if (!(this instanceof SettingsActivity)) {
+					i = new Intent(this, SettingsActivity.class);
+				}
 				break;
 		}
 		if (i != null) {
@@ -224,7 +231,12 @@ public abstract class GenericActivity extends FragmentActivity {
 			int state = intent.getIntExtra(ReceiverList.EXTRA_STATE, 0);
 			mIsConnected = state == 1;
 
-			Toast.makeText(GenericActivity.this, mIsConnected ? "Connected" : "Disconnected", Toast.LENGTH_SHORT).show();
+			if (mIsConnected) {
+				onConnect();
+			} else {
+				onDisconnect();
+			}
+			//Toast.makeText(GenericActivity.this, mIsConnected ? "Connected" : "Disconnected", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -232,7 +244,7 @@ public abstract class GenericActivity extends FragmentActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			float weight = intent.getFloatExtra(ReceiverList.EXTRA_WEIGHT, 0f);
-			receivedNewWeight(weight);
+			onReceiveNewWeight(weight);
 		}
 	}
 }

@@ -22,7 +22,7 @@ public class AdminActivity extends GenericActivity implements OnClickListener {
 	}
 
 	@Override
-	protected void receivedNewWeight(float weight) {
+	protected void onReceiveNewWeight(float weight) {
 
 	}
 

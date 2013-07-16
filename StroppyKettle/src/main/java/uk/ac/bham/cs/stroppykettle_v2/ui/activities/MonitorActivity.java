@@ -19,6 +19,7 @@ public class MonitorActivity extends GenericActivity implements OnClickListener 
 	private ToggleButton mPowerButton;
 	private TextView mWeightText;
 	private ScrollView mScroll;
+	private Button mConnect;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,22 +33,34 @@ public class MonitorActivity extends GenericActivity implements OnClickListener 
 
 		mPowerButton = (ToggleButton) findViewById(R.id.powerButton);
 		mPowerButton.setOnClickListener(this);
+		mPowerButton.setEnabled(false);
 		mWeightText = (TextView) findViewById(R.id.monitor_text);
 
 		Button clearBt = (Button) findViewById(R.id.clearButton);
 		clearBt.setOnClickListener(this);
 
-		Button connect = (Button) findViewById(R.id.connectButton);
-		connect.setOnClickListener(this);
-
-		Button disconnect = (Button) findViewById(R.id.disconnectButton);
-		disconnect.setOnClickListener(this);
+		mConnect = (Button) findViewById(R.id.connectButton);
+		mConnect.setOnClickListener(this);
+		mConnect.setText(getString(R.string.connect));
 	}
 
 	@Override
-	protected void receivedNewWeight(float newWeight) {
-		mWeightText.setText(mWeightText.getText() + "\n" + newWeight);
+	protected void onConnect() {
+		super.onConnect();
+		mConnect.setText(getString(R.string.disconnect));
+		mPowerButton.setEnabled(true);
+	}
 
+	@Override
+	protected void onDisconnect() {
+		super.onConnect();
+		mConnect.setText(getString(R.string.connect));
+		mPowerButton.setEnabled(false);
+	}
+
+	@Override
+	protected void onReceiveNewWeight(float newWeight) {
+		mWeightText.setText(mWeightText.getText() + "\n" + newWeight);
 		mScroll.post(new Runnable() {
 			@Override
 			public void run() {
@@ -67,10 +80,11 @@ public class MonitorActivity extends GenericActivity implements OnClickListener 
 				//getLastWeight();
 				break;
 			case R.id.connectButton:
-				connect();
-				break;
-			case R.id.disconnectButton:
-				disconnect();
+				if (mIsConnected) {
+					disconnect();
+				} else {
+					connect();
+				}
 				break;
 		}
 	}

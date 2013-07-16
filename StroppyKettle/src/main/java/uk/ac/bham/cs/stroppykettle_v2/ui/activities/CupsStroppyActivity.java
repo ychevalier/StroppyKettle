@@ -135,12 +135,12 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 	}
 
 	@Override
-	protected void receivedNewWeight(float weight) {
+	protected void onReceiveNewWeight(float weight) {
 		if (mState == IS_WAITING_FOR_WEIGHT) {
 			setRefreshing(false);
 			sendPowerMessage(true);
 
-			int nbSpins = (mCondition == StroppyKettleApplication.CONDITION_STROPPY ?
+			int nbSpins = (mCondition == getResources().getInteger(R.integer.condition_stroppy) ?
 					StroppyKettleApplication.computeNbSpins(
 							weight, mCupWeightRef.get(mNbCups) == null ?
 							0 : mCupWeightRef.get(mNbCups), mStroppiness, mPrecision) : 0);

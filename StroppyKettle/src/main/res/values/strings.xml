@@ -11,7 +11,7 @@
     <!-- Main Activity -->
     <string name="stroppy_button">Stroppy!</string>
 
-    <!-- Settings Fragment -->
+    <!-- Calibration Fragment -->
     <string name="remove_kettle">Remove the kettle</string>
     <string name="empty_kettle">Put an empty kettle</string>
     <string name="fill_kettle">Please fill</string>
@@ -25,7 +25,8 @@
     <string name="dialog_confirm_message">You are about to set up the previous state again, Are you
         sure?
     </string>
-
+    <string name="dialog_redo_title">"Calibration already done"</string>
+    <string name="dialog_redo_message">Are you sure you want to do this again?</string>
     <!-- Game Stroppy Activity -->
     <string name="image_desc">StroppyWheel</string>
     <string name="game_title">Spin the wheel to power up the kettle</string>
@@ -44,10 +45,108 @@
     <string name="connect">Con</string>
     <string name="disconnect">Dis</string>
 
-    <!-- Test Arrays -->
-    <string-array name="an_array">
-        <item>one</item>
-        <item>two</item>
-        <item>three</item>
+    <!-- === Preferences === -->
+
+    <!-- Sections -->
+    <string name="exp_params">Experiments Parameters</string>
+    <string name="scale_params">Scale Parameters</string>
+    <string name="usability_params">Usability Parameters</string>
+    <string name="com_params">Communication Parameters</string>
+
+    <!-- Condition -->
+    <string name="condition_key">Condition</string>
+    <string name="condition_title">Condition</string>
+    <string name="condition_summary">Mode in which you want the app to be</string>
+    <string name="condition_dialog_title">Choose your condition</string>
+    <string name="condition_default">2</string>
+    <string-array name="conditions">
+        <item>Login</item>
+        <item>Monitoring</item>
+        <item>Stroppy</item>
     </string-array>
+    <string-array name="condition_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <!-- Calibration -->
+    <string name="calibration_title">Calibration</string>
+    <string name="calibration_summary">Calibrate the scale weights</string>
+
+    <!-- Stroppiness -->
+    <string name="stroppiness_key">Stroppiness</string>
+    <string name="stroppiness_title">Stroppiness</string>
+    <string name="stroppiness_summary">Stroppiness of the Wheel</string>
+    <string name="stroppiness_dialog_title">Select the stroppiness</string>
+    <string name="stroppiness_dialog_message">The unit is arbitrary.</string>
+
+    <!-- Precision -->
+    <string name="precision_key">Precision</string>
+    <string name="precision_title">Precision</string>
+    <string name="precision_summary">Scale Precision</string>
+    <string name="precision_dialog_title">Select the scale precision</string>
+
+    <!-- Address -->
+    <string name="address_key">Address</string>
+    <string name="address_title">Address</string>
+    <string name="address_summary">Enter the scale\'s MAC address</string>
+    <string name="address_dialog_title">Enter a MAC address</string>
+    <string name="address_default">00:06:66:08:E7:09</string>
+
+    <!-- MaxCups -->
+    <string name="max_cups_key">MaxCups</string>
+    <string name="max_cups_title">Maximum Number of Cups</string>
+    <string name="max_cups_summary">Maximum Number of Cups in the Kettle</string>
+    <string name="max_cups_dialog_title">Select the Number of Cups</string>
+
+    <!-- Alive Interval -->
+    <string name="alive_key">AliveInterval</string>
+    <string name="alive_title">Bluetooth Connection Tester</string>
+    <string name="alive_summary">Send empty messages every n seconds</string>
+    <string name="alive_dialog_title">Select the testing interval</string>
+    <string name="alive_dialog_message">Interval is in seconds</string>
+
+    <!-- Data Interval -->
+    <string name="data_key">DataInterval</string>
+    <string name="data_title">Data Gathering Interval</string>
+    <string name="data_summary">Send DB dumps every n hours</string>
+    <string name="data_dialog_title">Select the data sending interval</string>
+    <string name="data_dialog_message">Interval is in hours</string>
+
+    <!-- Cups Timeout -->
+    <string name="cups_timeout_key">CupsTimeout</string>
+    <string name="cups_timeout_title">Cups Activity Timeout</string>
+    <string name="cups_timeout_summary">Seconds before Cups Selecting Activity finishes</string>
+    <string name="cups_timeout_dialog_title">Select the Cups Activity Timeout</string>
+    <string name="cups_timeout_dialog_message">Interval is in seconds</string>
+
+    <!-- Game Timeout -->
+    <string name="game_timeout_key">GameTimeout</string>
+    <string name="game_timeout_title">Game Activity Timeout</string>
+    <string name="game_timeout_summary">Seconds before Stroppy Game finishes</string>
+    <string name="game_timeout_dialog_title">Select the Game Activity Timeout</string>
+    <string name="game_timeout_dialog_message">Interval is in seconds</string>
+
+    <!-- Boiling Timeout -->
+    <string name="boiling_timeout_key">BoilingTimeout</string>
+    <string name="boiling_timeout_title">Boiling Activity Timeout</string>
+    <string name="boiling_timeout_summary">Seconds before Water is completely boiled</string>
+    <string name="boiling_timeout_dialog_title">Select the Boiling Activity Timeout</string>
+    <string name="boiling_timeout_dialog_message">Interval is in seconds</string>
+
+    <!-- Progress Bar Timeout -->
+    <string name="progress_timeout_key">ProgressTimeout</string>
+    <string name="progress_timeout_title">Progress Bar Timeout</string>
+    <string name="progress_timeout_summary">Remove a fragment of the progress every n seconds
+    </string>
+    <string name="progress_timeout_dialog_title">Select the timeout on game progress bar</string>
+    <string name="progress_timeout_dialog_message">Interval is in seconds</string>
+
+    <!-- Game Max Speed -->
+    <string name="game_max_speed_key">GameMaxSpeed</string>
+    <string name="game_max_speed_title">Wheel Max Speed</string>
+    <string name="game_max_speed_summary">Maximum speed of stropy wheel</string>
+    <string name="game_max_speed_dialog_title">Select the maximum speed of the wheel</string>
+    <string name="game_max_speed_dialog_message">Number is arbitrary</string>
 </resources>

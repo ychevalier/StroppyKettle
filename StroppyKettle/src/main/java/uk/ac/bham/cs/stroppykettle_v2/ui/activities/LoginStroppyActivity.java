@@ -70,7 +70,7 @@ public class LoginStroppyActivity extends GenericStroppyActivity implements
 	}
 
 	@Override
-	protected void receivedNewWeight(float weight) {
+	protected void onReceiveNewWeight(float weight) {
 	}
 
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -96,7 +96,7 @@ public class LoginStroppyActivity extends GenericStroppyActivity implements
 		long startTime = cal.getTimeInMillis() / 1000;
 
 		Intent i;
-		if (mCondition == StroppyKettleApplication.CONDITION_LOGIN) {
+		if (mCondition == getResources().getInteger(R.integer.condition_login)) {
 
 			interactionLog(id, mCondition, startTime, -1, -1, -1, false, 0, -1, -1);
 			i = new Intent(this, BoilingStroppyActivity.class);

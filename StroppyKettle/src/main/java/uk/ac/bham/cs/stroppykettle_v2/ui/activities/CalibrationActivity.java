@@ -3,9 +3,13 @@ package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.widget.Button;
@@ -23,14 +27,14 @@ import uk.ac.bham.cs.stroppykettle_v2.ui.fragments.CalibrationFragment;
 import uk.ac.bham.cs.stroppykettle_v2.ui.views.CustomViewPager;
 
 public class CalibrationActivity extends GenericActivity implements
-		OnPageChangeListener, View.OnClickListener {
+		OnPageChangeListener, View.OnClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
 	private static final String TAG = CalibrationActivity.class.getSimpleName();
 
 	private int mCurrentPosition;
 	private CustomViewPager mPager;
-	private boolean mDoNotUpdateOnCancel;
+	private boolean mDoNotUpdate;
 	private Button mWeightIndicator;
 	private float mLastWeight;
 
@@ -38,11 +42,9 @@ public class CalibrationActivity extends GenericActivity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		// Views
 		setTitle(getString(R.string.action_calibration));
-
 		setContentView(R.layout.activity_calibration);
-
-		mLastWeight = 0;
 
 		mWeightIndicator = (Button) findViewById(R.id.weight);
 		mWeightIndicator.setText(String.valueOf(mLastWeight));
@@ -61,13 +63,25 @@ public class CalibrationActivity extends GenericActivity implements
 
 		pageIndicator.setOnPageChangeListener(this);
 
+		// Inits
 		mPager.setCurrentItem(0);
-		mCurrentPosition = mPager.getCurrentItem();
-		mDoNotUpdateOnCancel = false;
+		mCurrentPosition = 0;
+
+		// TODO : test if we need to update or not.
+		mDoNotUpdate = false;
+		mLastWeight = 0;
+
+		getSupportLoaderManager().restartLoader(0, null, this);
+		setRefreshing(true);
 	}
 
 	@Override
-	protected void receivedNewWeight(float weight) {
+	protected void onServiceBound() {
+		getCurrentWeight();
+	}
+
+	@Override
+	protected void onReceiveNewWeight(float weight) {
 		mLastWeight = weight;
 		mWeightIndicator.setText(String.valueOf(mLastWeight));
 	}
@@ -106,7 +120,7 @@ public class CalibrationActivity extends GenericActivity implements
 						public void onClick(DialogInterface dialog, int id) {
 							// If we are going to the same page again,
 							// we dont want to update.
-							mDoNotUpdateOnCancel = true;
+							mDoNotUpdate = true;
 							mPager.setCurrentItem(mCurrentPosition);
 						}
 					});
@@ -116,7 +130,7 @@ public class CalibrationActivity extends GenericActivity implements
 
 		} else {
 			mCurrentPosition = position;
-			if (!mDoNotUpdateOnCancel) {
+			if (!mDoNotUpdate) {
 				// We are using position -2 because it starts at -1 and
 				// we are at the next position that the one we want to update.
 				ContentValues cv = new ContentValues();
@@ -133,10 +147,10 @@ public class CalibrationActivity extends GenericActivity implements
 						public void run() {
 							finish();
 						}
-					}, 1000);
+					}, 800);
 				}
 			}
-			mDoNotUpdateOnCancel = false;
+			mDoNotUpdate = false;
 		}
 	}
 
@@ -147,5 +161,49 @@ public class CalibrationActivity extends GenericActivity implements
 	@Override
 	public void onPageScrolled(int position, float positionOffset,
 							   int positionOffsetPixels) {
+	}
+
+	@Override
+	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+		String[] projection = {StroppyKettleContract.Scale.SCALE_ID, StroppyKettleContract.Scale.SCALE_NB_CUPS, StroppyKettleContract.Scale.SCALE_WEIGHT};
+
+		return new CursorLoader(this, StroppyKettleContract.Scale.CONTENT_URI,
+				projection, null, null, null);
+	}
+
+	@Override
+	public void onLoadFinished(final Loader<Cursor> cursorLoader, final Cursor cursor) {
+		setRefreshing(false);
+
+		if (cursor == null) return;
+
+		if (cursor.getCount() >= mMaxCups + 2) {
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+			builder.setMessage(R.string.dialog_redo_message).setTitle(R.string.dialog_redo_title);
+
+			builder.setPositiveButton(android.R.string.ok,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							// Nothing
+						}
+					});
+			builder.setNegativeButton(android.R.string.cancel,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							CalibrationActivity.this.finish();
+						}
+					});
+
+			AlertDialog dialog = builder.create();
+			dialog.show();
+		}
+		// We stop this the first time we go here.
+		cursor.close();
+	}
+
+	@Override
+	public void onLoaderReset(Loader<Cursor> cursorLoader) {
 	}
 }
