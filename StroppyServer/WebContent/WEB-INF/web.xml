@@ -25,4 +25,30 @@
         <url-pattern>/logs_receiver</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>InteractionsReceiverServlet</servlet-name>
+        <servlet-class>
+            uk.ac.bham.cs.stroppykettle_v2.servlets.InteractionsReceiverServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>InteractionsReceiverServlet</servlet-name>
+        <url-pattern>/interactions_receiver</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ConnectionsReceiverServlet</servlet-name>
+        <servlet-class>
+            uk.ac.bham.cs.stroppykettle_v2.servlets.ConnectionsReceiverServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ConnectionsReceiverServlet</servlet-name>
+        <url-pattern>/connections_receiver</url-pattern>
+    </servlet-mapping>
+
 </web-app>
