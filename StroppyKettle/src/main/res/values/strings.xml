@@ -47,6 +47,11 @@
 
     <!-- === Preferences === -->
 
+    <!-- Send Tasks -->
+    <string name="send_last_connections_key">last_connections</string>
+    <string name="send_last_logs_key">last_logs</string>
+    <string name="send_last_interactions_key">last_interactions</string>
+
     <!-- Sections -->
     <string name="exp_params">Experiments Parameters</string>
     <string name="scale_params">Scale Parameters</string>
