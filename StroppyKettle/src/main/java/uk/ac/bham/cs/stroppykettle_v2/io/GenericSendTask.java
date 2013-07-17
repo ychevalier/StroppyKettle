@@ -8,7 +8,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import java.util.Calendar;
 
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
+import uk.ac.bham.cs.stroppykettle_v2.utils.Utils;
 
 public abstract class GenericSendTask extends AsyncTask<Long, Void, Boolean> {
 
@@ -65,17 +66,21 @@ public abstract class GenericSendTask extends AsyncTask<Long, Void, Boolean> {
 		return true;
 	}
 
-	protected boolean sendJSON(JSONObject content) {
+	protected boolean sendJSON(JSONObject content, String path) {
 
 		int TIMEOUT_MILLISEC = 10000;  // = 10 seconds
 		HttpParams httpParams = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_MILLISEC);
 		HttpConnectionParams.setSoTimeout(httpParams, TIMEOUT_MILLISEC);
 		HttpClient client = new DefaultHttpClient(httpParams);
-		HttpPost request = new HttpPost(StroppyKettleApplication.SERVER_URL);
+		HttpPost request = new HttpPost(Utils.SERVER_URL + path);
 		try {
-			request.setEntity(new ByteArrayEntity(
-					content.toString().getBytes("UTF8")));
+			//request.setEntity(new ByteArrayEntity(
+			//		content.toString().getBytes("UTF8")));
+
+			StringEntity se = new StringEntity(content.toString(), "UTF-8");
+			se.setContentType("application/json; charset=UTF-8");
+			request.setEntity(se);
 			HttpResponse response = client.execute(request);
 
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {

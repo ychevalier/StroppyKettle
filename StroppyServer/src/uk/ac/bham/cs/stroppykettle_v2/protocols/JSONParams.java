@@ -1,7 +1,7 @@
 package uk.ac.bham.cs.stroppykettle_v2.protocols;
 
 public class JSONParams {
-
+	
 	public static final String DEVICE_ID = "device_id";
 
 	// == Connections == //
@@ -27,4 +27,5 @@ public class JSONParams {
 	public static final String INTERACTION_STROPPINESS = "interaction_stroppiness";
 	public static final String INTERACTION_USER_ID = "interaction_user_id";
 	public static final String INTERACTION_WEIGHT = "interaction_weight";
+
 }

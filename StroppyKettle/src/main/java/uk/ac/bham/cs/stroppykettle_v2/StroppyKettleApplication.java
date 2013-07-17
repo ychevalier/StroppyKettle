@@ -1,15 +1,12 @@
 package uk.ac.bham.cs.stroppykettle_v2;
 
-import android.app.AlarmManager;
 import android.app.Application;
-import android.app.PendingIntent;
-import android.content.Context;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import java.util.Calendar;
-
+import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract;
 import uk.ac.bham.cs.stroppykettle_v2.services.DataService;
 import uk.ac.bham.cs.stroppykettle_v2.services.WeightService;
 
@@ -17,9 +14,6 @@ public class StroppyKettleApplication extends Application {
 
 	public static final boolean DEBUG_MODE = true;
 	public static final String TAG = StroppyKettleApplication.class.getSimpleName();
-
-	// TODO
-	public static final String SERVER_URL = "http://example.com";
 
 	@Override
 	public void onCreate() {
@@ -36,13 +30,26 @@ public class StroppyKettleApplication extends Application {
 		startService(weightService);
 
 		// == Data Sending Service == //
-		int dataInterval = settings.getInt(getString(R.string.data_key), getResources().getInteger(R.integer.data_default));
-		Calendar cal = Calendar.getInstance();
-		long time = cal.getTimeInMillis();
+		//int dataInterval = settings.getInt(getString(R.string.data_key), getResources().getInteger(R.integer.data_default));
+		//Calendar cal = Calendar.getInstance();
+		//long time = cal.getTimeInMillis();
 
-		PendingIntent dataIntent = PendingIntent.getService(this, 0, new Intent(this, DataService.class), 0);
-		AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time + dataInterval * 60 * 60 * 1000, dataInterval * 60 * 60 * 1000, dataIntent);
+		//PendingIntent dataService = PendingIntent.getService(this, 0, new Intent(this, DataService.class), 0);
+		//AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		//alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, time + dataInterval * 60 * 60 * 1000, dataInterval * 60 * 60 * 1000, dataService);
+
+
+		// TODO Remove
+		ContentValues cv = new ContentValues();
+		for (int i = 0; i < 10; i++) {
+			cv.put(StroppyKettleContract.Logs.LOG_DATETIME, 1234 + i);
+			cv.put(StroppyKettleContract.Logs.LOG_WEIGHT, i);
+			cv.put(StroppyKettleContract.Logs.LOG_PREVIOUS_WEIGHT, i - 1);
+			getContentResolver().insert(StroppyKettleContract.Logs.CONTENT_URI, cv);
+			cv.clear();
+		}
+
+		startService(new Intent(this, DataService.class));
 	}
 
 	public static int computeNbSpins(float weight, float supposedWeight, int stroppiness, int precision) {

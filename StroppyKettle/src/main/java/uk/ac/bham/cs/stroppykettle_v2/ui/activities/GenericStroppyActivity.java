@@ -63,7 +63,7 @@ public abstract class GenericStroppyActivity extends GenericActivity implements
 				Intent i = new Intent(this, AdminActivity.class);
 				//i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				startActivity(i);
-				//finish();
+				finish();
 				return true;
 		}
 		return false;

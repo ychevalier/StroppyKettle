@@ -1,4 +1,4 @@
-*.iml
+.iml
 *.iws
 *.ipr
 .idea/
@@ -10,3 +10,6 @@ build/
 
 *~
 *.swp
+
+bin/
+JettyServer/

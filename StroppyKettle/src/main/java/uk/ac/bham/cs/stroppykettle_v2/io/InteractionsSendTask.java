@@ -2,6 +2,7 @@ package uk.ac.bham.cs.stroppykettle_v2.io;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.Settings.Secure;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -11,6 +12,7 @@ import org.json.JSONObject;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
 import uk.ac.bham.cs.stroppykettle_v2.protocols.JSONParams;
 import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract;
+import uk.ac.bham.cs.stroppykettle_v2.utils.Utils;
 
 public class InteractionsSendTask extends GenericSendTask {
 
@@ -51,6 +53,7 @@ public class InteractionsSendTask extends GenericSendTask {
 
 		Cursor cursor = mContext.getContentResolver().query(StroppyKettleContract.Interactions.CONTENT_URI, projection, selection, selectionArgs, order);
 		if (cursor == null) return false;
+		if (cursor.getCount() == 0) return true;
 
 		JSONObject toSend = new JSONObject();
 		JSONArray interactions = new JSONArray();
@@ -82,7 +85,8 @@ public class InteractionsSendTask extends GenericSendTask {
 		}
 
 		try {
-			toSend.put(JSONParams.LOG_LIST, interactions);
+			toSend.put(JSONParams.DEVICE_ID, Secure.getString(mContext.getContentResolver(), Secure.ANDROID_ID));
+			toSend.put(JSONParams.INTERACTION_LIST, interactions);
 		} catch (JSONException e) {
 			if (DEBUG_MODE) {
 				e.printStackTrace();
@@ -91,6 +95,6 @@ public class InteractionsSendTask extends GenericSendTask {
 		}
 
 		// Send the JSON
-		return sendJSON(toSend);
+		return sendJSON(toSend, Utils.INTERACTIONS_PATH);
 	}
 }
