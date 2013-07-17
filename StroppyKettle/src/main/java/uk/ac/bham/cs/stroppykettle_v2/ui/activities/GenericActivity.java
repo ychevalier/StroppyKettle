@@ -161,6 +161,10 @@ public abstract class GenericActivity extends FragmentActivity {
 		sendMessage(WeightService.MSG_GET_CURRENT);
 	}
 
+	protected void connectNewAddress() {
+		sendMessage(WeightService.MSG_CONNECT_NEW);
+	}
+
 	protected void connect() {
 		sendMessage(WeightService.MSG_CONNECT);
 	}
@@ -170,13 +174,17 @@ public abstract class GenericActivity extends FragmentActivity {
 	}
 
 	private void sendMessage(int msgType) {
-		sendMessage(msgType, 0);
+		sendMessage(msgType, 0, null);
 	}
 
 	private void sendMessage(int msgType, int arg) {
+		sendMessage(msgType, arg, null);
+	}
+
+	private void sendMessage(int msgType, int arg, String address) {
 		if (!mBound) return;
 		// Create and send a message to the service, using a supported 'what' value
-		Message msg = Message.obtain(null, msgType, arg, 0);
+		Message msg = Message.obtain(null, msgType, arg, 0, address);
 		try {
 			mService.send(msg);
 		} catch (RemoteException e) {

@@ -4,12 +4,10 @@ import android.app.Service;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.preference.PreferenceManager;
 
 import java.util.Calendar;
 import java.util.Map;
@@ -17,7 +15,6 @@ import java.util.Map;
 import at.abraxas.amarino.AmarinoHelper;
 import at.abraxas.amarino.AmarinoListener;
 import at.abraxas.amarino.AmarinoReceiver;
-import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
 import uk.ac.bham.cs.stroppykettle_v2.protocols.BluetoothSerial;
 import uk.ac.bham.cs.stroppykettle_v2.provider.StroppyKettleContract;
@@ -28,12 +25,16 @@ public class WeightService extends Service implements AmarinoListener {
 	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
 	private static final String TAG = WeightService.class.getSimpleName();
 
+	public static final String EXTRA_ADDRESS = "uk.ac.bham.cs.stroppykettle_v2.services.WeightService.EXTRA_ADDRESS";
+	public static final String EXTRA_ALIVE = "uk.ac.bham.cs.stroppykettle_v2.services.WeightService.EXTRA_ALIVE";
+
 	public static final int MSG_TOGGLE_POWER = 0;
 	public static final int MSG_GET_CURRENT = 1;
 	public static final int MSG_CONNECT = 2;
 	public static final int MSG_DISCONNECT = 3;
 	public static final int MSG_ALIVE = 4;
 	public static final int MSG_GET_CONNECTION_STATE = 5;
+	public static final int MSG_CONNECT_NEW = 6;
 
 	// This is the object that receives interactions from clients. See
 	// RemoteService for a more complete example.
@@ -85,14 +86,20 @@ public class WeightService extends Service implements AmarinoListener {
 
 		mHasAskedDisconnection = false;
 
-		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-		mAddress = settings.getString(getString(R.string.address_key), getString(R.string.address_default));
-		mAliveInterval = settings.getInt(getString(R.string.alive_key), getResources().getInteger(R.integer.alive_default));
+		//SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+		//mAddress = settings.getString(getString(R.string.address_key), getString(R.string.address_default));
+		//mAliveInterval = settings.getInt(getString(R.string.alive_key), getResources().getInteger(R.integer.alive_default));
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		interactWithArduino(MSG_CONNECT);
+		if (intent != null) {
+			mAddress = intent.getStringExtra(EXTRA_ADDRESS);
+			mAliveInterval = intent.getIntExtra(EXTRA_ALIVE, 0);
+		}
+		if (mAddress != null) {
+			interactWithArduino(MSG_CONNECT);
+		}
 		return Service.START_NOT_STICKY;
 	}
 
@@ -150,10 +157,10 @@ public class WeightService extends Service implements AmarinoListener {
 	}
 
 	private void interactWithArduino(int type) {
-		interactWithArduino(type, 0);
+		interactWithArduino(type, 0, null);
 	}
 
-	private void interactWithArduino(int type, int arg) {
+	private void interactWithArduino(int type, int arg, String address) {
 		stopAliveTask();
 		switch (type) {
 			case MSG_TOGGLE_POWER:
@@ -166,6 +173,12 @@ public class WeightService extends Service implements AmarinoListener {
 				break;
 			case MSG_CONNECT:
 				AmarinoHelper.connect(this, mAddress);
+				break;
+			case MSG_CONNECT_NEW:
+				// We in fact disconnect && reconnect automatically.
+				AmarinoHelper.disconnect(this, mAddress);
+				mAddress = address;
+				mAliveInterval = arg;
 				break;
 			case MSG_DISCONNECT:
 				mHasAskedDisconnection = true;
@@ -260,7 +273,7 @@ public class WeightService extends Service implements AmarinoListener {
 	private class IncomingHandler extends Handler {
 		@Override
 		public void handleMessage(Message msg) {
-			interactWithArduino(msg.what, msg.arg1);
+			interactWithArduino(msg.what, msg.arg1, (String) msg.obj);
 		}
 	}
 }
