@@ -44,8 +44,8 @@ public class StroppyKettleApplication extends Application {
 		//ContentValues cv = new ContentValues();
 		//for (int i = 0; i < 10; i++) {
 		//	cv.put(StroppyKettleContract.Logs.LOG_DATETIME, 1234 + i);
-		//	cv.put(StroppyKettleContract.Logs.LOG_WEIGHT, i);
-		//	cv.put(StroppyKettleContract.Logs.LOG_PREVIOUS_WEIGHT, i - 1);
+		//	cv.put(StroppyKettleContract.Logs.LOG_WEIGHT, Float.valueOf(i));
+		//	cv.put(StroppyKettleContract.Logs.LOG_PREVIOUS_WEIGHT, Float.valueOf(i - 1));
 		//	getContentResolver().insert(StroppyKettleContract.Logs.CONTENT_URI, cv);
 		//	cv.clear();
 		//}

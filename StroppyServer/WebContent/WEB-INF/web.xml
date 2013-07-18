@@ -13,9 +13,22 @@
          id="WebApp_ID" version="2.5">
 
     <servlet>
+        <servlet-name>HomeServlet</servlet-name>
+        <servlet-class>
+            uk.ac.bham.cs.stroppykettle_v2.servlets.HomeServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>HomeServlet</servlet-name>
+        <url-pattern>/home</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>LogsReceiverServlet</servlet-name>
         <servlet-class>
-            uk.ac.bham.cs.stroppykettle_v2.servlets.LogsReceiverServlet
+            uk.ac.bham.cs.stroppykettle_v2.servlets.receivers.LogsReceiverServlet
         </servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
@@ -28,7 +41,7 @@
     <servlet>
         <servlet-name>InteractionsReceiverServlet</servlet-name>
         <servlet-class>
-            uk.ac.bham.cs.stroppykettle_v2.servlets.InteractionsReceiverServlet
+            uk.ac.bham.cs.stroppykettle_v2.servlets.receivers.InteractionsReceiverServlet
         </servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
@@ -41,7 +54,7 @@
     <servlet>
         <servlet-name>ConnectionsReceiverServlet</servlet-name>
         <servlet-class>
-            uk.ac.bham.cs.stroppykettle_v2.servlets.ConnectionsReceiverServlet
+            uk.ac.bham.cs.stroppykettle_v2.servlets.receivers.ConnectionsReceiverServlet
         </servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
@@ -49,6 +62,45 @@
     <servlet-mapping>
         <servlet-name>ConnectionsReceiverServlet</servlet-name>
         <url-pattern>/connections_receiver</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>LogsReportServlet</servlet-name>
+        <servlet-class>
+            uk.ac.bham.cs.stroppykettle_v2.servlets.reports.LogsReportServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>LogsReportServlet</servlet-name>
+        <url-pattern>/logs_report</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ConnectionsReportServlet</servlet-name>
+        <servlet-class>
+            uk.ac.bham.cs.stroppykettle_v2.servlets.reports.ConnectionsReportServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ConnectionsReportServlet</servlet-name>
+        <url-pattern>/connections_report</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>InteractionsReportServlet</servlet-name>
+        <servlet-class>
+            uk.ac.bham.cs.stroppykettle_v2.servlets.reports.InteractionsReportServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>InteractionsReportServlet</servlet-name>
+        <url-pattern>/interactions_report</url-pattern>
     </servlet-mapping>
 
 </web-app>
