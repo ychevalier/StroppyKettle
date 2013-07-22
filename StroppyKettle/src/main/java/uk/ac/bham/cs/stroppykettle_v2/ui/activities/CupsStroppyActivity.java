@@ -151,7 +151,7 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 
 			Intent i;
 			if (nbSpins == 0) {
-				interactionLog(mUserId, mCondition, mStartTime, -1, weight, mNbCups, false, 0, mStroppiness, nbSpins);
+				interactionLog(mUserId, mCondition, mStartTime, -1, weight, mNbCups, false, true, 0, mStroppiness, nbSpins);
 				i = new Intent(this, BoilingStroppyActivity.class);
 			} else {
 				i = new Intent(this, GameStroppyActivity.class);
@@ -166,7 +166,7 @@ public class CupsStroppyActivity extends GenericStroppyActivity implements
 		} else if (mState == IS_TIMEOUT) {
 			setRefreshing(false);
 			sendPowerMessage(false);
-			interactionLog(mUserId, mCondition, mStartTime, -1, weight, mNbCups, false, 1, mStroppiness, -1);
+			interactionLog(mUserId, mCondition, mStartTime, -1, weight, mNbCups, false, false, 0, mStroppiness, -1);
 			finish();
 		}
 		mState = IS_NOTHING;

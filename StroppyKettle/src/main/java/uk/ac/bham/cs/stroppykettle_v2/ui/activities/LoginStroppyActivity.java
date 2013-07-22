@@ -93,12 +93,12 @@ public class LoginStroppyActivity extends GenericStroppyActivity implements
 	private void startCupsActivityOrLog(long id, String name) {
 
 		Calendar cal = Calendar.getInstance();
-		long startTime = cal.getTimeInMillis() / 1000;
+		long startTime = cal.getTimeInMillis();
 
 		Intent i;
 		if (mCondition == getResources().getInteger(R.integer.condition_login)) {
 
-			interactionLog(id, mCondition, startTime, -1, -1, -1, false, 0, -1, -1);
+			interactionLog(id, mCondition, startTime, -1, -1, -1, false, true, 0, -1, -1);
 			i = new Intent(this, BoilingStroppyActivity.class);
 			sendPowerMessage(true);
 		} else {

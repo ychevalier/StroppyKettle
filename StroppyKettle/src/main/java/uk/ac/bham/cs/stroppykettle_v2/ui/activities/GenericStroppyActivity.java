@@ -35,21 +35,18 @@ public abstract class GenericStroppyActivity extends GenericActivity implements
 	}
 
 	protected void interactionLog(long userId, int condition, long startTime, long stopTime,
-								  float weight, int nbCups, boolean isStroppy, int nbFailures,
+								  float weight, int nbCups, boolean isStroppy, boolean isSuccess, int nbRedos,
 								  int stroppiness, int nbSpins) {
 		ContentValues cv = new ContentValues();
 		cv.put(StroppyKettleContract.Interactions.INTERACTION_USER_ID, userId);
 		cv.put(StroppyKettleContract.Interactions.INTERACTION_CONDITION, condition);
-
 		cv.put(StroppyKettleContract.Interactions.INTERACTION_START_DATETIME, startTime);
 		cv.put(StroppyKettleContract.Interactions.INTERACTION_STOP_DATETIME, stopTime);
-
 		cv.put(StroppyKettleContract.Interactions.INTERACTION_WEIGHT, weight);
 		cv.put(StroppyKettleContract.Interactions.INTERACTION_NB_CUPS, nbCups);
-
 		cv.put(StroppyKettleContract.Interactions.INTERACTION_IS_STROPPY, isStroppy ? 1 : 0);
-		cv.put(StroppyKettleContract.Interactions.INTERACTION_NB_FAILURES, nbFailures);
-
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_IS_SUCCESS, isSuccess ? 1 : 0);
+		cv.put(StroppyKettleContract.Interactions.INTERACTION_NB_REDOS, nbRedos);
 		cv.put(StroppyKettleContract.Interactions.INTERACTION_STROPPINESS, stroppiness);
 		cv.put(StroppyKettleContract.Interactions.INTERACTION_NB_SPINS, nbSpins);
 

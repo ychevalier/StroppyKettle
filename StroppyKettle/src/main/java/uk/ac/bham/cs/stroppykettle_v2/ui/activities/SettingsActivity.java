@@ -1,7 +1,6 @@
 package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 
 import android.os.Bundle;
-import android.widget.Toast;
 
 import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.ui.fragments.SettingsFragment;
@@ -25,11 +24,11 @@ public class SettingsActivity extends GenericActivity implements SettingsFragmen
 
 	@Override
 	protected void onConnect() {
-		Toast.makeText(this, mIsConnected ? "Connected" : "Disconnected", Toast.LENGTH_SHORT).show();
+		//Toast.makeText(this, mIsConnected ? "Connected" : "Disconnected", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
 	protected void onDisconnect() {
-		Toast.makeText(this, mIsConnected ? "Connected" : "Disconnected", Toast.LENGTH_SHORT).show();
+		//Toast.makeText(this, mIsConnected ? "Connected" : "Disconnected", Toast.LENGTH_SHORT).show();
 	}
 }

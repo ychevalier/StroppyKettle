@@ -38,14 +38,15 @@ public class InteractionsSendTask extends GenericSendTask {
 				StroppyKettleContract.Interactions.INTERACTION_ID,
 				StroppyKettleContract.Interactions.INTERACTION_START_DATETIME,
 				StroppyKettleContract.Interactions.INTERACTION_STOP_DATETIME,
-				StroppyKettleContract.Interactions.INTERACTION_NB_FAILURES,
+				StroppyKettleContract.Interactions.INTERACTION_NB_REDOS,
 				StroppyKettleContract.Interactions.INTERACTION_CONDITION,
 				StroppyKettleContract.Interactions.INTERACTION_IS_STROPPY,
 				StroppyKettleContract.Interactions.INTERACTION_NB_CUPS,
 				StroppyKettleContract.Interactions.INTERACTION_NB_SPINS,
 				StroppyKettleContract.Interactions.INTERACTION_STROPPINESS,
 				StroppyKettleContract.Interactions.INTERACTION_USER_ID,
-				StroppyKettleContract.Interactions.INTERACTION_WEIGHT
+				StroppyKettleContract.Interactions.INTERACTION_WEIGHT,
+				StroppyKettleContract.Interactions.INTERACTION_IS_SUCCESS
 		};
 		String selection = StroppyKettleContract.Interactions.INTERACTION_START_DATETIME + ">=?";
 		String[] selectionArgs = {lastSending.toString()};
@@ -64,7 +65,7 @@ public class InteractionsSendTask extends GenericSendTask {
 			try {
 				interaction.put(JSONParams.INTERACTION_START_DATETIME, cursor.getLong(cursor.getColumnIndex(StroppyKettleContract.Interactions.INTERACTION_START_DATETIME)));
 				interaction.put(JSONParams.INTERACTION_STOP_DATETIME, cursor.getLong(cursor.getColumnIndex(StroppyKettleContract.Interactions.INTERACTION_STOP_DATETIME)));
-				interaction.put(JSONParams.INTERACTION_NB_FAILURES, cursor.getInt(cursor.getColumnIndex(StroppyKettleContract.Interactions.INTERACTION_NB_FAILURES)));
+				interaction.put(JSONParams.INTERACTION_NB_REDOS, cursor.getInt(cursor.getColumnIndex(StroppyKettleContract.Interactions.INTERACTION_NB_REDOS)));
 				interaction.put(JSONParams.INTERACTION_CONDITION, cursor.getInt(cursor.getColumnIndex(StroppyKettleContract.Interactions.INTERACTION_CONDITION)));
 				interaction.put(JSONParams.INTERACTION_IS_STROPPY, cursor.getInt(cursor.getColumnIndex(StroppyKettleContract.Interactions.INTERACTION_IS_STROPPY)));
 				interaction.put(JSONParams.INTERACTION_NB_CUPS, cursor.getInt(cursor.getColumnIndex(StroppyKettleContract.Interactions.INTERACTION_NB_CUPS)));
@@ -72,6 +73,7 @@ public class InteractionsSendTask extends GenericSendTask {
 				interaction.put(JSONParams.INTERACTION_STROPPINESS, cursor.getInt(cursor.getColumnIndex(StroppyKettleContract.Interactions.INTERACTION_STROPPINESS)));
 				interaction.put(JSONParams.INTERACTION_USER_ID, cursor.getLong(cursor.getColumnIndex(StroppyKettleContract.Interactions.INTERACTION_USER_ID)));
 				interaction.put(JSONParams.INTERACTION_WEIGHT, cursor.getFloat(cursor.getColumnIndex(StroppyKettleContract.Interactions.INTERACTION_WEIGHT)));
+				interaction.put(JSONParams.INTERACTION_IS_SUCCESS, cursor.getInt(cursor.getColumnIndex(StroppyKettleContract.Interactions.INTERACTION_IS_SUCCESS)));
 			} catch (JSONException e) {
 				if (DEBUG_MODE) {
 					e.printStackTrace();

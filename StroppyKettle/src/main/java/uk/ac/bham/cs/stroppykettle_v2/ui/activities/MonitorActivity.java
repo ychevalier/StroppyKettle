@@ -1,5 +1,6 @@
 package uk.ac.bham.cs.stroppykettle_v2.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,6 +11,7 @@ import android.widget.ToggleButton;
 
 import uk.ac.bham.cs.stroppykettle_v2.R;
 import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
+import uk.ac.bham.cs.stroppykettle_v2.services.DataService;
 
 public class MonitorActivity extends GenericActivity implements OnClickListener {
 
@@ -77,7 +79,7 @@ public class MonitorActivity extends GenericActivity implements OnClickListener 
 				break;
 			case R.id.clearButton:
 				mWeightText.setText("");
-				//getLastWeight();
+				startService(new Intent(this, DataService.class));
 				break;
 			case R.id.connectButton:
 				if (mIsConnected) {

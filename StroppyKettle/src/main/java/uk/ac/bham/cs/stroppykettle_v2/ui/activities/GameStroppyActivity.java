@@ -58,7 +58,7 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 	};
 
 	private boolean mIsSuccess;
-	private int mNbFailures;
+	private int mNbRedos;
 
 	private long mUserId;
 	private float mWeight;
@@ -136,6 +136,7 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 		vto.addOnGlobalLayoutListener(this);
 
 		mHandler = new Handler();
+		mNbRedos = 0;
 	}
 
 	@Override
@@ -160,8 +161,8 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 		}
 
 		Calendar cal = Calendar.getInstance();
-		long stopTime = cal.getTimeInMillis() / 1000;
-		interactionLog(mUserId, mCondition, mStartTime, stopTime, mWeight, mNbCups, true, mNbFailures, mStroppiness, mNbSpins);
+		long stopTime = cal.getTimeInMillis();
+		interactionLog(mUserId, mCondition, mStartTime, stopTime, mWeight, mNbCups, true, mIsSuccess, mNbRedos, mStroppiness, mNbSpins);
 	}
 
 	private void resetAndRelaunch() {
@@ -169,7 +170,6 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 		mRotCounter = 0;
 		mProgress.setProgress(0);
 
-		mNbFailures = 0;
 		mIsSuccess = false;
 
 		if (mHandler != null) {
@@ -208,7 +208,6 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 
 	private void timeIsOut() {
 		// The user has failed.
-		mNbFailures++;
 		sendPowerMessage(false);
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -220,6 +219,7 @@ public class GameStroppyActivity extends GenericStroppyActivity implements OnTou
 					public void onClick(DialogInterface dialog, int id) {
 						//logInteraction();
 						resetAndRelaunch();
+						mNbRedos++;
 					}
 				});
 		builder.setNegativeButton(android.R.string.cancel,

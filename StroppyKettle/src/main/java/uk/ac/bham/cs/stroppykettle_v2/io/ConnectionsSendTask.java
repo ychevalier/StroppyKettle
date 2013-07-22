@@ -34,6 +34,11 @@ public class ConnectionsSendTask extends GenericSendTask {
 
 		// Query the database
 		Long lastSending = args[0];
+
+		if (DEBUG_MODE) {
+			Log.d(TAG, "Sending : The last time I sent it was : " + lastSending);
+		}
+
 		String[] projection = {StroppyKettleContract.Connections.CONNECTION_ID, StroppyKettleContract.Connections.CONNECTION_STATE, StroppyKettleContract.Connections.CONNECTION_TIME};
 		String selection = StroppyKettleContract.Connections.CONNECTION_TIME + ">=?";
 		String[] selectionArgs = {lastSending.toString()};

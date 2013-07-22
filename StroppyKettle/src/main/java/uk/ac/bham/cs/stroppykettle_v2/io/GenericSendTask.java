@@ -68,6 +68,10 @@ public abstract class GenericSendTask extends AsyncTask<Long, Void, Boolean> {
 
 	protected boolean sendJSON(JSONObject content, String path) {
 
+		//if(DEBUG_MODE) {
+		//	Log.d(TAG, "Sending to " + Utils.SERVER_URL + path + ", Content : " + content.toString());
+		//}
+
 		int TIMEOUT_MILLISEC = 10000;  // = 10 seconds
 		HttpParams httpParams = new BasicHttpParams();
 		HttpConnectionParams.setConnectionTimeout(httpParams, TIMEOUT_MILLISEC);
@@ -75,9 +79,6 @@ public abstract class GenericSendTask extends AsyncTask<Long, Void, Boolean> {
 		HttpClient client = new DefaultHttpClient(httpParams);
 		HttpPost request = new HttpPost(Utils.SERVER_URL + path);
 		try {
-			//request.setEntity(new ByteArrayEntity(
-			//		content.toString().getBytes("UTF8")));
-
 			StringEntity se = new StringEntity(content.toString(), "UTF-8");
 			se.setContentType("application/json; charset=UTF-8");
 			request.setEntity(se);
@@ -85,8 +86,13 @@ public abstract class GenericSendTask extends AsyncTask<Long, Void, Boolean> {
 
 			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				return true;
+			} else {
+				//if(DEBUG_MODE) {
+				//	Log.d(TAG, "Just received a bad error code : " + response.getStatusLine());
+				//}
+				return false;
 			}
-			return false;
+
 		} catch (Exception e) {
 			if (DEBUG_MODE) {
 				e.printStackTrace();

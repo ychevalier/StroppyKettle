@@ -4,14 +4,19 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import uk.ac.bham.cs.stroppykettle_v2.R;
+import uk.ac.bham.cs.stroppykettle_v2.StroppyKettleApplication;
 import uk.ac.bham.cs.stroppykettle_v2.io.ConnectionsSendTask;
 import uk.ac.bham.cs.stroppykettle_v2.io.GenericSendTask;
 import uk.ac.bham.cs.stroppykettle_v2.io.InteractionsSendTask;
 import uk.ac.bham.cs.stroppykettle_v2.io.LogsSendTask;
 
 public class DataService extends IntentService implements GenericSendTask.SentListener {
+
+	private static final boolean DEBUG_MODE = StroppyKettleApplication.DEBUG_MODE;
+	private static final String TAG = DataService.class.getSimpleName();
 
 	private static final int CONNECTIONS_TASK_ID = 0;
 	private static final int LOGS_TASK_ID = 1;
@@ -24,6 +29,10 @@ public class DataService extends IntentService implements GenericSendTask.SentLi
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+
+		if (DEBUG_MODE) {
+			Log.d(TAG, "Starting Sending Task");
+		}
 
 		// Send Connections.
 		ConnectionsSendTask conTask = new ConnectionsSendTask(CONNECTIONS_TASK_ID, this, this);

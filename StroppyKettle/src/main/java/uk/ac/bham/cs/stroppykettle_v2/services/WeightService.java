@@ -1,7 +1,6 @@
 package uk.ac.bham.cs.stroppykettle_v2.services;
 
 import android.app.Service;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Handler;
@@ -202,12 +201,11 @@ public class WeightService extends Service implements AmarinoListener {
 			broadcastConnection(1);
 
 			Calendar cal = Calendar.getInstance();
-			long time = cal.getTimeInMillis() / 1000;
+			long time = cal.getTimeInMillis();
 
 			ContentValues cv = new ContentValues();
 			cv.put(StroppyKettleContract.Connections.CONNECTION_TIME, time);
 			cv.put(StroppyKettleContract.Connections.CONNECTION_STATE, 1);
-
 			getContentResolver().insert(StroppyKettleContract.Connections.CONTENT_URI, cv);
 		} else {
 			startReconnectTask();
@@ -224,12 +222,11 @@ public class WeightService extends Service implements AmarinoListener {
 		broadcastConnection(0);
 
 		Calendar cal = Calendar.getInstance();
-		long time = cal.getTimeInMillis() / 1000;
+		long time = cal.getTimeInMillis();
 
 		ContentValues cv = new ContentValues();
 		cv.put(StroppyKettleContract.Connections.CONNECTION_TIME, time);
 		cv.put(StroppyKettleContract.Connections.CONNECTION_STATE, 0);
-
 		getContentResolver().insert(StroppyKettleContract.Connections.CONTENT_URI, cv);
 	}
 
@@ -241,15 +238,12 @@ public class WeightService extends Service implements AmarinoListener {
 
 			if (weight == BluetoothSerial.ALIVE_REPLY) return;
 
-			ContentResolver cr = getContentResolver();
-			if (cr != null) {
-				ContentValues cv = new ContentValues();
-				Calendar cal = Calendar.getInstance();
-				cv.put(StroppyKettleContract.Logs.LOG_PREVIOUS_WEIGHT, mLastWeight);
-				cv.put(StroppyKettleContract.Logs.LOG_WEIGHT, weight);
-				cv.put(StroppyKettleContract.Logs.LOG_DATETIME, cal.getTimeInMillis());
-				cr.insert(StroppyKettleContract.Logs.CONTENT_URI, cv);
-			}
+			ContentValues cv = new ContentValues();
+			Calendar cal = Calendar.getInstance();
+			cv.put(StroppyKettleContract.Logs.LOG_PREVIOUS_WEIGHT, mLastWeight);
+			cv.put(StroppyKettleContract.Logs.LOG_WEIGHT, weight);
+			cv.put(StroppyKettleContract.Logs.LOG_DATETIME, cal.getTimeInMillis());
+			getContentResolver().insert(StroppyKettleContract.Logs.CONTENT_URI, cv);
 
 			mLastWeight = weight;
 			broadcastWeight(mLastWeight);

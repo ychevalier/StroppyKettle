@@ -68,7 +68,8 @@ public class StroppyKettleDatabase extends SQLiteOpenHelper {
 				+ InteractionsColumns.INTERACTION_STROPPINESS + " INTEGER,"
 				+ InteractionsColumns.INTERACTION_WEIGHT + " REAL,"
 				+ InteractionsColumns.INTERACTION_IS_STROPPY + " INTEGER,"
-				+ InteractionsColumns.INTERACTION_NB_FAILURES + " INTEGER,"
+				+ InteractionsColumns.INTERACTION_NB_REDOS + " INTEGER,"
+				+ InteractionsColumns.INTERACTION_IS_SUCCESS + " INTEGER,"
 				+ InteractionsColumns.INTERACTION_USER_ID + " INTEGER " + References.USER_ID + ")");
 	}
 

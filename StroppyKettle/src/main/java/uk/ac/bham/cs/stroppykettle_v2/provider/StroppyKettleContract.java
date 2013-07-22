@@ -50,7 +50,8 @@ public class StroppyKettleContract {
 		String INTERACTION_STROPPINESS = "stroppiness";
 		String INTERACTION_IS_STROPPY = "is_stroppy";
 		String INTERACTION_NB_SPINS = "nb_spins";
-		String INTERACTION_NB_FAILURES = "nb_failures";
+		String INTERACTION_NB_REDOS = "nb_redos";
+		String INTERACTION_IS_SUCCESS = "is_success";
 		String INTERACTION_USER_ID = "user_id";
 	}
 
